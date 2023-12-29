@@ -82,7 +82,8 @@ fn main() {
 
 fn load(pid: u32) -> Result<(), Anno1800AgentLoaderError> {
     let path = PCSTR::from_raw(format!(r"{}\anno1800_agent.dll", std::env::current_dir().unwrap().display()).as_ptr());
-    unsafe {println!("Loading");
+    unsafe {
+        println!("Loading");
         let remote_process = RemoteProcess::new(pid)?;
         let kernel_32 = GetModuleHandleA(s!("Kernel32")).map_err(Anno1800AgentLoaderError::GetModuleHandleAFailed)?;
         let load_library_a_address = GetProcAddress(kernel_32, s!("LoadLibraryA")).ok_or(Anno1800AgentLoaderError::GetProcAddressFailed(GetLastError()))?;
