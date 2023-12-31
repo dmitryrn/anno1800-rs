@@ -14,8 +14,8 @@ use windows::{
         System::{
             LibraryLoader::GetModuleHandleA,
             Memory::{
-                VirtualAlloc, VirtualProtect, VirtualQuery, MEMORY_BASIC_INFORMATION, MEM_COMMIT, MEM_FREE, MEM_RESERVE, PAGE_EXECUTE,
-                PAGE_EXECUTE_READWRITE, PAGE_PROTECTION_FLAGS,
+                VirtualAlloc, VirtualProtect, VirtualQuery, MEMORY_BASIC_INFORMATION, MEM_COMMIT, MEM_FREE, MEM_RESERVE, PAGE_EXECUTE, PAGE_EXECUTE_READWRITE,
+                PAGE_PROTECTION_FLAGS,
             },
         },
     },
@@ -26,21 +26,16 @@ use crate::api::class4::Class4;
 static CELL: OnceLock<UdpSocket> = OnceLock::new();
 
 pub unsafe extern "fastcall" fn handle_update_potential_production_hook(class4_ptr: u64) {
-    debug!("handle_update_potential_production_hook({:#016x})", class4_ptr);
     let class4 = Class4::new(class4_ptr);
-    debug!("{class4:?}");
     let socket = CELL.get_or_init(|| {
         debug!("creating udp socket");
         let socket = UdpSocket::bind("0.0.0.0:0").unwrap();
         debug!("creating udp socket done");
         socket
     });
-    socket
-        .send_to(format!("{:?}\n", class4).as_bytes(), "192.168.178.33:1800")
-        .unwrap();
+    socket.send_to(format!("{:?}\n", class4).as_bytes(), "192.168.178.33:1800").unwrap();
     let call_base = GetModuleHandleA(s!("Anno1800.exe")).unwrap();
     let call_address = call_base.0 as usize + 0xd4e400;
-    debug!("calling original function at {:#016x}", call_address);
     let orig: extern "fastcall" fn(class4: u64) = unsafe { transmute(call_address) };
     orig(class4_ptr);
 }
