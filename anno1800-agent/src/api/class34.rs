@@ -1,20 +1,16 @@
 use std::fmt::Debug;
 
-pub struct Class32 {
+pub struct Class34 {
     pub address: u64,
 }
 
-impl Class32 {
+impl Class34 {
     pub unsafe fn new(address: u64) -> Self {
         Self { address }
     }
 
-    pub fn get_ware_id(&self) -> u32 {
+    pub fn get_potential_production(&self) -> f32 {
         self.get(0x0000)
-    }
-
-    pub fn get_4(&self) -> f32 {
-        self.get(0x016c)
     }
 
     fn get<T>(&self, offset: u64) -> T {
@@ -22,12 +18,11 @@ impl Class32 {
     }
 }
 
-impl Debug for Class32 {
+impl Debug for Class34 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("Class32")
+        f.debug_struct("Class34")
             .field("address", &format!("{:#018x}", &self.address))
-            .field("ware_id", &format!("{:#010x}", &self.get_ware_id()))
-            .field("4", &format!("{:.2}", &self.get_4()))
+            .field("potential_production", &format!("{:.2}", &self.get_potential_production()))
             .finish()
     }
 }

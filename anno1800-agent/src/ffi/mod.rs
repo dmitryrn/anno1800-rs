@@ -21,7 +21,7 @@ use windows::{
     },
 };
 
-use crate::api::class4::Class4;
+use crate::api::{class4::Class4, BuildingType, class33::Class33, class34::Class34};
 
 static CELL: OnceLock<UdpSocket> = OnceLock::new();
 
@@ -38,6 +38,15 @@ pub unsafe extern "fastcall" fn handle_update_potential_production_hook(class4_p
     let call_address = call_base.0 as usize + 0xd4e400;
     let orig: extern "fastcall" fn(class4: u64) = unsafe { transmute(call_address) };
     orig(class4_ptr);
+}
+
+pub fn exec_get_class34(class4: &Class4, class33: &Class33, building_type: &BuildingType) -> Class34 {
+    unsafe {
+        let call_base = GetModuleHandleA(s!("Anno1800.exe")).unwrap();
+        let call_address = call_base.0 as usize + 0xd63fb0;
+        let orig: extern "fastcall" fn(class33_ptr: u64, building_type_ptr: u64) -> u64 = transmute(call_address);
+        Class34::new(orig(class33.address, building_type as *const BuildingType as u64))
+    }
 }
 
 #[derive(Debug)]

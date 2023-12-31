@@ -1,4 +1,5 @@
 [workspace]
+workspace.resolver = "2"
 members = [
     "anno1800-agent",
     "anno1800-agent-loader",

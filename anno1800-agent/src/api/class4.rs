@@ -1,6 +1,8 @@
 use std::fmt::Debug;
 
-use super::class32::Class32;
+use crate::ffi::exec_get_class34;
+
+use super::{class32::Class32, BuildingType, class33::Class33, class34::Class34};
 
 pub struct Class4 {
     pub address: u64,
@@ -15,6 +17,10 @@ impl Class4 {
         self.get(0x0000)
     }
 
+    pub fn get_prod_thingy(&self) -> Class33 {
+        unsafe { Class33::new(self.address + 0x00b0) }
+    }
+
     pub fn get_first_input(&self) -> u64 {
         self.get(0x0148)
     }
@@ -27,7 +33,7 @@ impl Class4 {
         self.get(0x016c) // always 1?
     }
 
-    pub fn get_type(&self) -> u32 {
+    pub fn get_building_type(&self) -> BuildingType {
         self.get(0x0168)
     }
 
@@ -54,6 +60,12 @@ impl Class4 {
         inputs
     }
 
+    pub fn get_prod_class34(&self) -> Class34 {
+        let class33 = self.get_prod_thingy();
+        let building_type = self.get_building_type();
+        exec_get_class34(self, &class33, &building_type)
+    }
+
     fn get<T>(&self, offset: u64) -> T {
         unsafe { ((self.address + offset) as *const T).read_volatile() }
     }
@@ -68,7 +80,8 @@ impl Debug for Class4 {
             .field("current_productivity_factor", &format!("{:.2}", &self.get_current_productivity_factor()))
             .field("potential_productivity_factor", &format!("{:.2}", &self.get_potential_productivity_factor()))
             .field("millis_per_cycle", &format!("{:05}", &self.get_millis_per_cycle()))
-            .field("type", &format!("{:#08x}", &self.get_type()))
+            .field("prod_class34", &self.get_prod_class34())
+            .field("type", &self.get_building_type())
             .field("inputs", &self.get_inputs())
             .finish()
     }
