@@ -1,13 +1,8 @@
 use log::debug;
-use std::{
-    mem::{size_of, transmute},
-    net::UdpSocket,
-    os::raw::c_void,
-    sync::OnceLock,
-};
+use std::{mem::transmute, net::UdpSocket, sync::OnceLock};
 use windows::{s, Win32::System::LibraryLoader::GetModuleHandleA};
 
-use crate::api::{class11::Class11, class33::Class33, class34::Class34, class4::Class4, BuildingType};
+use crate::api::{class11::Class11, class4::Class4};
 
 static CELL: OnceLock<UdpSocket> = OnceLock::new();
 

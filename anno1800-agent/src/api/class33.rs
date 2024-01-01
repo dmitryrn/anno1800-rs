@@ -1,4 +1,4 @@
-use std::{fmt::Debug, mem::transmute};
+use std::mem::transmute;
 
 use windows::{s, Win32::System::LibraryLoader::GetModuleHandleA};
 
@@ -20,9 +20,5 @@ impl Class33 {
             let orig: extern "fastcall" fn(class33_ptr: u64, building_type_ptr: u64) -> u64 = transmute(call_address);
             Class34::new(orig(self.address, building_type as *const BuildingType as u64))
         }
-    }
-
-    fn get<T>(&self, offset: u64) -> T {
-        unsafe { ((self.address + offset) as *const T).read_volatile() }
     }
 }

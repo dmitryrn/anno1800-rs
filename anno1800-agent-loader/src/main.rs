@@ -1,4 +1,4 @@
-use std::{mem::size_of, string::FromUtf8Error};
+use std::string::FromUtf8Error;
 
 use clap::Parser;
 use log::{debug, error, info, LevelFilter};
@@ -9,7 +9,7 @@ use windows::{
     Win32::{
         Foundation::{GetLastError, WIN32_ERROR},
         System::{
-            Diagnostics::Debug::{IMAGE_DIRECTORY_ENTRY_EXPORT, IMAGE_NT_HEADERS32, IMAGE_NT_HEADERS64},
+            Diagnostics::Debug::{IMAGE_DIRECTORY_ENTRY_EXPORT, IMAGE_NT_HEADERS64},
             LibraryLoader::{GetModuleHandleA, GetProcAddress, LoadLibraryA},
             SystemServices::{IMAGE_DOS_HEADER, IMAGE_EXPORT_DIRECTORY},
         },

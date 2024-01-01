@@ -1,19 +1,7 @@
 #![allow(clippy::missing_safety_doc)]
-use log::{debug, error, info, trace};
-use std::{
-    sync::{
-        atomic::{AtomicU8, Ordering},
-        mpsc::{channel, Receiver, Sender},
-        Mutex,
-    },
-    thread::{self},
-    time::Duration,
-};
-use windows::{
-    imp::GetLastError,
-    s,
-    Win32::System::Memory::{VirtualProtect, PAGE_EXECUTE, PAGE_PROTECTION_FLAGS, PAGE_READWRITE},
-};
+use log::{debug, info};
+
+use windows::s;
 
 use crate::hooks::{handle_loop_over_islands_hook, handle_update_potential_production_hook};
 

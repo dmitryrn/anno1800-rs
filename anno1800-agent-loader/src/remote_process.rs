@@ -1,5 +1,5 @@
 #![allow(clippy::missing_safety_doc)]
-use log::debug;
+
 use windows::{
     core::PCSTR,
     Win32::{

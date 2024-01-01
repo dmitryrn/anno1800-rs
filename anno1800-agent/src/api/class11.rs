@@ -32,9 +32,8 @@ impl Class11 {
             unsafe {
                 let index = current.read_volatile();
                 let address = ptrs.offset(index as isize).read_volatile();
-                match Class20::new(address) {
-                    Class20::Class20_1Ptr(ptr) => data.push(ptr),
-                    _ => {}
+                if let Class20::Class20_1Ptr(ptr) = Class20::new(address) {
+                    data.push(ptr)
                 }
                 current = current.add(1);
             }
