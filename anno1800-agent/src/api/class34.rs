@@ -9,6 +9,7 @@ impl Class34 {
         Self { address }
     }
 
+    /// Gets constantly updated, but *never* read anywhere else except in update_potential_production_or_consumption
     pub fn get_potential_production(&self) -> f32 {
         self.get(0x0000)
     }

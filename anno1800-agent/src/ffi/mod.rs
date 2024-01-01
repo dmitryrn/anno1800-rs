@@ -40,7 +40,7 @@ pub unsafe extern "fastcall" fn handle_update_potential_production_hook(class4_p
     orig(class4_ptr);
 }
 
-pub fn exec_get_class34(class4: &Class4, class33: &Class33, building_type: &BuildingType) -> Class34 {
+pub fn exec_get_class34(class33: &Class33, building_type: &BuildingType) -> Class34 {
     unsafe {
         let call_base = GetModuleHandleA(s!("Anno1800.exe")).unwrap();
         let call_address = call_base.0 as usize + 0xd63fb0;

@@ -17,6 +17,10 @@ impl Class4 {
         self.get(0x0000)
     }
 
+    pub fn get_field_8(&self) -> u64 {
+        self.get(0x0008)
+    }
+
     pub fn get_prod_thingy(&self) -> Class33 {
         unsafe { Class33::new(self.address + 0x00b0) }
     }
@@ -63,7 +67,7 @@ impl Class4 {
     pub fn get_prod_class34(&self) -> Class34 {
         let class33 = self.get_prod_thingy();
         let building_type = self.get_building_type();
-        exec_get_class34(self, &class33, &building_type)
+        exec_get_class34(&class33, &building_type)
     }
 
     fn get<T>(&self, offset: u64) -> T {
@@ -76,6 +80,7 @@ impl Debug for Class4 {
         f.debug_struct("Class4")
             .field("address", &format!("{:#018x}", &self.address))
             .field("vtable", &format!("{:#018x}", &self.get_vtable()))
+            .field("field_8", &format!("{:#018x}", &self.get_field_8()))
             .field("field_16c", &format!("{:#08x}", &self.get_16c()))
             .field("current_productivity_factor", &format!("{:.2}", &self.get_current_productivity_factor()))
             .field("potential_productivity_factor", &format!("{:.2}", &self.get_potential_productivity_factor()))
