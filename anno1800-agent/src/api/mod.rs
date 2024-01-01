@@ -1,8 +1,21 @@
-use std::fmt::Debug;
+use std::{fmt::Debug, sync::OnceLock};
+
+use windows::{s, Win32::System::LibraryLoader::GetModuleHandleA};
+pub mod class11;
+pub mod class20;
 pub mod class32;
 pub mod class33;
 pub mod class34;
 pub mod class4;
+
+static ANNO1800_BASE: OnceLock<u64> = OnceLock::new();
+
+pub fn get_module_base() -> u64 {
+    *ANNO1800_BASE.get_or_init(|| {
+        let base = unsafe { GetModuleHandleA(s!("Anno1800.exe")) }.unwrap();
+        base.0.try_into().unwrap()
+    })
+}
 
 #[derive(PartialEq, Eq)]
 pub struct BuildingType(pub u32);
@@ -13,10 +26,6 @@ pub const SHEEP_FARM: BuildingType = BuildingType(0x000f_6a15);
 pub const FISHERY: BuildingType = BuildingType(0x000f_6a18);
 pub const SCHNAPPS_DESTILLERY: BuildingType = BuildingType(0x000f_6a28);
 pub const FRAMEWORK_KNITTERS: BuildingType = BuildingType(0x000f_6a3d);
-
-pub struct WareType(pub u32);
-pub const POTATOS: BuildingType = BuildingType(0x000f_6a13);
-pub const WOOD: BuildingType = BuildingType(0x0001_d4c8);
 
 impl Debug for BuildingType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -32,3 +41,8 @@ impl Debug for BuildingType {
         }
     }
 }
+
+#[derive(PartialEq, Eq)]
+pub struct WareType(pub u32);
+pub const POTATOS: BuildingType = BuildingType(0x000f_6a13);
+pub const WOOD: BuildingType = BuildingType(0x0001_d4c8);

@@ -1,8 +1,6 @@
 use std::fmt::Debug;
 
-use crate::ffi::exec_get_class34;
-
-use super::{class32::Class32, BuildingType, class33::Class33, class34::Class34};
+use super::{class32::Class32, class33::Class33, class34::Class34, BuildingType};
 
 pub struct Class4 {
     pub address: u64,
@@ -67,7 +65,7 @@ impl Class4 {
     pub fn get_prod_class34(&self) -> Class34 {
         let class33 = self.get_prod_thingy();
         let building_type = self.get_building_type();
-        exec_get_class34(&class33, &building_type)
+        class33.get_class34(&building_type)
     }
 
     fn get<T>(&self, offset: u64) -> T {
@@ -79,9 +77,9 @@ impl Debug for Class4 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("Class4")
             .field("address", &format!("{:#018x}", &self.address))
-            .field("vtable", &format!("{:#018x}", &self.get_vtable()))
-            .field("field_8", &format!("{:#018x}", &self.get_field_8()))
-            .field("field_16c", &format!("{:#08x}", &self.get_16c()))
+            //.field("vtable", &format!("{:#018x}", &self.get_vtable()))
+            //.field("field_8", &format!("{:#018x}", &self.get_field_8()))
+            //.field("field_16c", &format!("{:#08x}", &self.get_16c()))
             .field("current_productivity_factor", &format!("{:.2}", &self.get_current_productivity_factor()))
             .field("potential_productivity_factor", &format!("{:.2}", &self.get_potential_productivity_factor()))
             .field("millis_per_cycle", &format!("{:05}", &self.get_millis_per_cycle()))

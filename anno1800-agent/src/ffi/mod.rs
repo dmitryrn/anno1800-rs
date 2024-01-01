@@ -1,14 +1,8 @@
-use std::{
-    mem::{size_of, transmute},
-    net::UdpSocket,
-    os::raw::c_void,
-    sync::OnceLock,
-};
+use std::{mem::size_of, os::raw::c_void};
 
 use log::{debug, error, info, trace};
 use windows::{
     core::PCSTR,
-    s,
     Win32::{
         Foundation::{GetLastError, WIN32_ERROR},
         System::{
@@ -20,34 +14,6 @@ use windows::{
         },
     },
 };
-
-use crate::api::{class4::Class4, BuildingType, class33::Class33, class34::Class34};
-
-static CELL: OnceLock<UdpSocket> = OnceLock::new();
-
-pub unsafe extern "fastcall" fn handle_update_potential_production_hook(class4_ptr: u64) {
-    let class4 = Class4::new(class4_ptr);
-    let socket = CELL.get_or_init(|| {
-        debug!("creating udp socket");
-        let socket = UdpSocket::bind("0.0.0.0:0").unwrap();
-        debug!("creating udp socket done");
-        socket
-    });
-    socket.send_to(format!("{:?}\n", class4).as_bytes(), "192.168.178.33:1800").unwrap();
-    let call_base = GetModuleHandleA(s!("Anno1800.exe")).unwrap();
-    let call_address = call_base.0 as usize + 0xd4e400;
-    let orig: extern "fastcall" fn(class4: u64) = unsafe { transmute(call_address) };
-    orig(class4_ptr);
-}
-
-pub fn exec_get_class34(class33: &Class33, building_type: &BuildingType) -> Class34 {
-    unsafe {
-        let call_base = GetModuleHandleA(s!("Anno1800.exe")).unwrap();
-        let call_address = call_base.0 as usize + 0xd63fb0;
-        let orig: extern "fastcall" fn(class33_ptr: u64, building_type_ptr: u64) -> u64 = transmute(call_address);
-        Class34::new(orig(class33.address, building_type as *const BuildingType as u64))
-    }
-}
 
 #[derive(Debug)]
 pub enum HookError {
