@@ -31,6 +31,8 @@ pub fn get_module_base() -> u64 {
 #[derive(PartialEq, Eq)]
 pub struct BuildingType(pub u32);
 pub const LUMBERJACKS_HUT: BuildingType = BuildingType(0x0001_d4c8);
+pub const CLAY_PIT: BuildingType = BuildingType(0x00000_f6a19);
+pub const BRICK_FACTORY: BuildingType = BuildingType(0x00000_f6a1d);
 pub const POTATO_FARM: BuildingType = BuildingType(0x000f_6a13);
 pub const SAWMILL: BuildingType = BuildingType(0x000f_6a14);
 pub const SHEEP_FARM: BuildingType = BuildingType(0x000f_6a15);
@@ -42,13 +44,15 @@ impl Debug for BuildingType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match *self {
             LUMBERJACKS_HUT => f.write_str("Lumberjack's Hut"),
+            CLAY_PIT => f.write_str("Clay Pit"),
+            BRICK_FACTORY => f.write_str("Brick Factory"),
             POTATO_FARM => f.write_str("Potato Farm"),
             SAWMILL => f.write_str("Sawmill"),
             SHEEP_FARM => f.write_str("Sheep Farm"),
             FISHERY => f.write_str("Fishery"),
             SCHNAPPS_DESTILLERY => f.write_str("Schnapps Destillery"),
             FRAMEWORK_KNITTERS => f.write_str("Framework Knitters"),
-            _ => f.write_str(&format!("Unknown({:010x}", self.0)),
+            _ => f.write_str(&format!("Unknown({:010x})", self.0)),
         }
     }
 }

@@ -1,4 +1,4 @@
-use super::{AnnoPtr, HashMapPtr};
+use super::{class20::Class20_1Ptr, AnnoPtr, HashMapPtr};
 use std::fmt::Debug;
 
 pub struct Class46Ptr {
@@ -10,9 +10,10 @@ impl Class46Ptr {
         self.get(0x0000)
     }
 
-    pub fn get_class20(&self, weird_id: u32) -> u64 {
+    pub fn get_class20(&self, weird_id: u32) -> Class20_1Ptr {
         let map = self.get_hashmap_ptr();
-        map.get_entry(weird_id)
+        let address = map.get_entry(weird_id);
+        unsafe { Class20_1Ptr::new(address) }
     }
 
     pub fn get_hashmap_ptr(&self) -> HashMapPtr {
@@ -46,7 +47,7 @@ impl Debug for Class46Ptr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("Class46Ptr")
             .field("address", &format!("{:#018x}", &self.address))
-            .field("class47", &format!("{:#018x}", &self.get_class20(0x301)))
+            .field("class20", &format!("{:?}", &self.get_class20(0x301)))
             .finish()
     }
 }

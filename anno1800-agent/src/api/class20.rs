@@ -1,5 +1,7 @@
 use std::fmt::Debug;
 
+use log::warn;
+
 use super::{class4::Class4Ptr, get_module_base, BoxedArrayListPtr};
 
 pub enum Class20 {
@@ -25,7 +27,12 @@ impl Class20_1Ptr {
     const VTABLE_OFFSET: u64 = 0x510E550;
 
     pub unsafe fn new(address: u64) -> Self {
-        Self { address }
+        let obj = Self { address };
+        let vtable = obj.get_vtable();
+        if vtable - get_module_base() != Self::VTABLE_OFFSET {
+            warn!("Unexpected Class20_1Ptr vtable {vtable:#018x}")
+        }
+        obj
     }
 
     pub fn get_vtable(&self) -> u64 {

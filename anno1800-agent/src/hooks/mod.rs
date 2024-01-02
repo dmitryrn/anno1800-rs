@@ -31,7 +31,15 @@ pub unsafe extern "fastcall" fn handle_loop_over_islands_hook(class11_ptr: u64, 
 pub unsafe extern "fastcall" fn handle_demand2_loop(class46_ptr: u64, weird_id: u32, a3: u64, a4: u64) {
     if weird_id == 0x301 {
         let class46 = Class46Ptr::new(class46_ptr);
-        send(&format!("handle_demand2_loop {:?}\n", class46));
+        let class20 = class46.get_class20(weird_id);
+        // send(&format!("handle_demand2_loop {:?}\n", class20));
+        let mut buf = format!("handle_demand2_loop {:018x}\n", class20.address);
+        for class4 in class20.get_class4s() {
+            let building_type = class4.get_building_type();
+            let potential_production = class4.get_prod_thingy().get_class34(&building_type).get_potential_production();
+            buf.push_str(&format!("    {:?} ({:.02}/min) \n", building_type, potential_production))
+        }
+        send(&buf);
     }
     let call_base = get_module_base();
     let call_address = call_base + 0xcabc70;
