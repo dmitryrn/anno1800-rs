@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use super::get_module_base;
+use super::{class4::Class4Ptr, get_module_base, BoxedArrayListPtr};
 
 pub enum Class20 {
     Class20_1Ptr(Class20_1Ptr),
@@ -32,6 +32,11 @@ impl Class20_1Ptr {
         self.get(0x0000)
     }
 
+    pub fn get_class4s(&self) -> Vec<Class4Ptr> {
+        let list = unsafe { BoxedArrayListPtr::new(self.address + 0x28) };
+        list.get_all::<Class4Ptr>()
+    }
+
     fn get<T>(&self, offset: u64) -> T {
         unsafe { ((self.address + offset) as *const T).read_volatile() }
     }
@@ -39,6 +44,9 @@ impl Class20_1Ptr {
 
 impl Debug for Class20_1Ptr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("Class20Ptr").field("address", &format!("{:#018x}", &self.address)).finish()
+        f.debug_struct("Class20Ptr")
+            .field("address", &format!("{:#018x}", &self.address))
+            .field("class4s", &self.get_class4s())
+            .finish()
     }
 }

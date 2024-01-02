@@ -1,16 +1,22 @@
 use std::fmt::Debug;
 
-use super::{class32::Class32, class33::Class33, class34::Class34, BuildingType};
+use super::{class32::Class32, class33::Class33, class34::Class34, AnnoPtr, BuildingType};
 
-pub struct Class4 {
+pub struct Class4Ptr {
     pub address: u64,
 }
 
-impl Class4 {
-    pub unsafe fn new(address: u64) -> Self {
+impl AnnoPtr for Class4Ptr {
+    unsafe fn new(address: u64) -> Self {
         Self { address }
     }
 
+    fn get_address(&self) -> u64 {
+        self.address
+    }
+}
+
+impl Class4Ptr {
     pub fn get_vtable(&self) -> u64 {
         self.get(0x0000)
     }
@@ -67,13 +73,9 @@ impl Class4 {
         let building_type = self.get_building_type();
         class33.get_class34(&building_type)
     }
-
-    fn get<T>(&self, offset: u64) -> T {
-        unsafe { ((self.address + offset) as *const T).read_volatile() }
-    }
 }
 
-impl Debug for Class4 {
+impl Debug for Class4Ptr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("Class4")
             .field("address", &format!("{:#018x}", &self.address))
