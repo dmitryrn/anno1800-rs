@@ -33,13 +33,17 @@ pub unsafe extern "fastcall" fn handle_demand2_loop(class46_ptr: u64, weird_id: 
         let class46 = Class46Ptr::new(class46_ptr);
         let class20 = class46.get_class20(weird_id);
         // send(&format!("handle_demand2_loop {:?}\n", class20));
-        let mut buf = format!("handle_demand2_loop {:018x}\n", class20.address);
-        for class4 in class20.get_class4s() {
+        let class4s = class20.get_class4s();
+        let mut buf = format!("handle_demand2_loop class20={:018x} buildings={}\n", class20.address, class4s.len());
+        for class4 in class4s {
             let building_type = class4.get_building_type();
             let potential_production = class4.get_prod_thingy().get_class34(&building_type).get_potential_production();
-            buf.push_str(&format!("    {:?} ({:.02}/min) \n", building_type, potential_production))
+            buf.push_str(&format!("    {:#018x} {:?} ({:.02}/min) \n", class4.address, building_type, potential_production))
         }
-        send(&buf);
+        if class20.address == 0x000000028ee2935660 {
+            send(&buf);
+        }
+        
     }
     let call_base = get_module_base();
     let call_address = call_base + 0xcabc70;

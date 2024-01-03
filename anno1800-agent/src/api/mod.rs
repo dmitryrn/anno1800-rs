@@ -31,28 +31,40 @@ pub fn get_module_base() -> u64 {
 #[derive(PartialEq, Eq)]
 pub struct BuildingType(pub u32);
 pub const LUMBERJACKS_HUT: BuildingType = BuildingType(0x0001_d4c8);
-pub const CLAY_PIT: BuildingType = BuildingType(0x00000_f6a19);
-pub const BRICK_FACTORY: BuildingType = BuildingType(0x00000_f6a1d);
+pub const GRAIN_FARM: BuildingType = BuildingType(0x000f_6a10);
+pub const HOP_FARM: BuildingType = BuildingType(0x000f_6a12);
 pub const POTATO_FARM: BuildingType = BuildingType(0x000f_6a13);
 pub const SAWMILL: BuildingType = BuildingType(0x000f_6a14);
 pub const SHEEP_FARM: BuildingType = BuildingType(0x000f_6a15);
+pub const PIG_FARM: BuildingType = BuildingType(0x000f_6a17);
 pub const FISHERY: BuildingType = BuildingType(0x000f_6a18);
+pub const CLAY_PIT: BuildingType = BuildingType(0x0000f_6a19);
+pub const BRICK_FACTORY: BuildingType = BuildingType(0x0000f_6a1d);
+pub const BREWERY: BuildingType = BuildingType(0x000f_6a26);
 pub const SCHNAPPS_DESTILLERY: BuildingType = BuildingType(0x000f_6a28);
+pub const SLAUGHTERHOUSE: BuildingType = BuildingType(0x000f_6a3e);
+pub const MALTHOUSE: BuildingType = BuildingType(0x000f_6a3c);
 pub const FRAMEWORK_KNITTERS: BuildingType = BuildingType(0x000f_6a3d);
 
 impl Debug for BuildingType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match *self {
             LUMBERJACKS_HUT => f.write_str("Lumberjack's Hut"),
-            CLAY_PIT => f.write_str("Clay Pit"),
-            BRICK_FACTORY => f.write_str("Brick Factory"),
+            GRAIN_FARM => f.write_str("Grain Farm"),
+            HOP_FARM => f.write_str("Hop Farm"),
             POTATO_FARM => f.write_str("Potato Farm"),
             SAWMILL => f.write_str("Sawmill"),
             SHEEP_FARM => f.write_str("Sheep Farm"),
+            PIG_FARM => f.write_str("Pig Farm"),
             FISHERY => f.write_str("Fishery"),
+            CLAY_PIT => f.write_str("Clay Pit"),
+            BRICK_FACTORY => f.write_str("Brick Factory"),
+            BREWERY => f.write_str("Brewery"),
             SCHNAPPS_DESTILLERY => f.write_str("Schnapps Destillery"),
+            SLAUGHTERHOUSE => f.write_str("Slaughterhouse"),
+            MALTHOUSE => f.write_str("Malthouse"),
             FRAMEWORK_KNITTERS => f.write_str("Framework Knitters"),
-            _ => f.write_str(&format!("Unknown({:010x})", self.0)),
+            _ => f.write_str(&format!("Unknown({:#010x})", self.0)),
         }
     }
 }
