@@ -28,8 +28,10 @@ pub fn get_module_base() -> u64 {
     })
 }
 
-#[derive(PartialEq, Eq)]
+#[derive(PartialEq, Eq, Hash, Copy, Clone)]
 pub struct BuildingType(pub u32);
+pub const BLUEPRINT: BuildingType = BuildingType(0x0000_0000);
+pub const POST_OFFICE: BuildingType = BuildingType(0x0000_0217);
 pub const LUMBERJACKS_HUT: BuildingType = BuildingType(0x0001_d4c8);
 pub const GRAIN_FARM: BuildingType = BuildingType(0x000f_6a10);
 pub const HOP_FARM: BuildingType = BuildingType(0x000f_6a12);
@@ -38,17 +40,26 @@ pub const SAWMILL: BuildingType = BuildingType(0x000f_6a14);
 pub const SHEEP_FARM: BuildingType = BuildingType(0x000f_6a15);
 pub const PIG_FARM: BuildingType = BuildingType(0x000f_6a17);
 pub const FISHERY: BuildingType = BuildingType(0x000f_6a18);
-pub const CLAY_PIT: BuildingType = BuildingType(0x0000f_6a19);
-pub const BRICK_FACTORY: BuildingType = BuildingType(0x0000f_6a1d);
+pub const CLAY_PIT: BuildingType = BuildingType(0x000f_6a19);
+pub const BRICK_FACTORY: BuildingType = BuildingType(0x000f_6a1d);
+pub const BAKERY: BuildingType = BuildingType(0x000f_6a25);
 pub const BREWERY: BuildingType = BuildingType(0x000f_6a26);
 pub const SCHNAPPS_DESTILLERY: BuildingType = BuildingType(0x000f_6a28);
+pub const COAL_MINE: BuildingType = BuildingType(0x000f_6a32);
+pub const IRON_MINE: BuildingType = BuildingType(0x000f_6a33);
+pub const COPPER_MINE: BuildingType = BuildingType(0x000f_6a36);
+pub const LIMESTONE_QUARRY: BuildingType = BuildingType(0x000f_6a37);
+pub const RENDERING_WORKS: BuildingType = BuildingType(0x000f_6a3a);
 pub const SLAUGHTERHOUSE: BuildingType = BuildingType(0x000f_6a3e);
+pub const FLOUR_MILL: BuildingType = BuildingType(0x000f_6a3b);
 pub const MALTHOUSE: BuildingType = BuildingType(0x000f_6a3c);
 pub const FRAMEWORK_KNITTERS: BuildingType = BuildingType(0x000f_6a3d);
 
 impl Debug for BuildingType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match *self {
+            BLUEPRINT => f.write_str("Blueprint"),
+            POST_OFFICE => f.write_str("Post Office"),
             LUMBERJACKS_HUT => f.write_str("Lumberjack's Hut"),
             GRAIN_FARM => f.write_str("Grain Farm"),
             HOP_FARM => f.write_str("Hop Farm"),
@@ -59,9 +70,16 @@ impl Debug for BuildingType {
             FISHERY => f.write_str("Fishery"),
             CLAY_PIT => f.write_str("Clay Pit"),
             BRICK_FACTORY => f.write_str("Brick Factory"),
+            BAKERY => f.write_str("Bakery"),
             BREWERY => f.write_str("Brewery"),
             SCHNAPPS_DESTILLERY => f.write_str("Schnapps Destillery"),
+            COAL_MINE => f.write_str("Coal Mine"),
+            IRON_MINE => f.write_str("Iron Mine"),
+            COPPER_MINE => f.write_str("Copper Mine"),
+            LIMESTONE_QUARRY => f.write_str("Limestone Quarry"),
+            RENDERING_WORKS => f.write_str("Rendering Works"),
             SLAUGHTERHOUSE => f.write_str("Slaughterhouse"),
+            FLOUR_MILL => f.write_str("Flour Mill"),
             MALTHOUSE => f.write_str("Malthouse"),
             FRAMEWORK_KNITTERS => f.write_str("Framework Knitters"),
             _ => f.write_str(&format!("Unknown({:#010x})", self.0)),
