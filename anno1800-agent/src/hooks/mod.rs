@@ -44,11 +44,9 @@ pub unsafe extern "fastcall" fn handle_demand2_loop(class46_ptr: u64, weird_id: 
             // buf.push_str(&format!("    {:#018x} {:?} ({:.02}/min) \n", class4.address, building_type, potential_production))
         }
         for (key, val) in map.iter() {
-            buf.push_str(&format!("    {:?}: {}\t{}/min\n", key, val.0, val.1))
+            buf.push_str(&format!("    {:<30?} {:4} Buildings {:.02}t/min\n", key, val.0, val.1))
         }
-        if class20.address == 0x000002e0a803ade0 {
-            send(&buf);
-        }
+        send(&buf);
     }
     let call_base = get_module_base();
     let call_address = call_base + 0xcabc70;
