@@ -44,7 +44,7 @@ pub unsafe extern "fastcall" fn handle_demand2_loop(class46_ptr: u64, weird_id: 
             // buf.push_str(&format!("    {:#018x} {:?} ({:.02}/min) \n", class4.address, building_type, potential_production))
         }
         for (key, val) in map.iter() {
-            buf.push_str(&format!("    {:<30?} {:4} Buildings {:.02}t/min\n", key, val.0, val.1))
+            buf.push_str(&format!("    {:<30?} {:4} Buildings, {:6.02}t/min\n", key, val.0, val.1))
         }
         send(&buf);
     }
