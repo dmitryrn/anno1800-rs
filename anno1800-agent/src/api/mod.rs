@@ -1,13 +1,15 @@
 use std::{fmt::Debug, sync::OnceLock};
 
 use windows::{s, Win32::System::LibraryLoader::GetModuleHandleA};
+pub mod array_list;
 pub mod class11;
 pub mod class20;
 pub mod class32;
 pub mod class33;
 pub mod class34;
-pub mod class4;
 pub mod class46;
+pub mod production_building;
+pub mod production_building_buff;
 
 pub trait AnnoPtr {
     unsafe fn new(address: u64) -> Self;
@@ -16,6 +18,16 @@ pub trait AnnoPtr {
 
     fn get<T>(&self, offset: u64) -> T {
         unsafe { ((self.get_address() + offset) as *const T).read_volatile() }
+    }
+}
+
+impl<T> AnnoPtr for *const T {
+    unsafe fn new(address: u64) -> Self {
+        address as _
+    }
+
+    fn get_address(&self) -> u64 {
+        *self as u64
     }
 }
 
@@ -155,43 +167,6 @@ impl Debug for BuildingType {
 pub struct WareType(pub u32);
 pub const POTATOS: BuildingType = BuildingType(0x000f_6a13);
 pub const WOOD: BuildingType = BuildingType(0x0001_d4c8);
-
-pub struct BoxedArrayListPtr {
-    pub address: u64,
-}
-
-impl BoxedArrayListPtr {
-    pub unsafe fn new(address: u64) -> Self {
-        Self { address }
-    }
-
-    pub fn get_first_box(&self) -> u64 {
-        self.get(0x00)
-    }
-
-    pub fn get_last_box(&self) -> u64 {
-        self.get(0x08)
-    }
-
-    pub fn get_all<T: AnnoPtr>(&self) -> Vec<T> {
-        let mut elements = vec![];
-        let mut current = self.get_first_box() as *const u64;
-        let last = self.get_last_box() as *const u64;
-        while current != last {
-            unsafe {
-                let ptr = T::new(current.read());
-                elements.push(ptr);
-                current = current.add(1);
-            }
-        }
-
-        elements
-    }
-
-    fn get<T>(&self, offset: u64) -> T {
-        unsafe { ((self.address + offset) as *const T).read_volatile() }
-    }
-}
 
 pub struct HashMapPtr {
     pub address: u64,

@@ -2,7 +2,7 @@ use std::fmt::Debug;
 
 use log::warn;
 
-use super::{class4::Class4Ptr, get_module_base, BoxedArrayListPtr};
+use super::{array_list::ArrayListPtr, get_module_base, production_building::ProductionBuildingPtr, AnnoPtr};
 
 pub enum Class20 {
     Class20_1Ptr(Class20_1Ptr),
@@ -39,9 +39,12 @@ impl Class20_1Ptr {
         self.get(0x0000)
     }
 
-    pub fn get_class4s(&self) -> Vec<Class4Ptr> {
-        let list = unsafe { BoxedArrayListPtr::new(self.address + 0x28) };
-        list.get_all::<Class4Ptr>()
+    pub fn get_production_building_list(&self) -> Vec<*const ProductionBuildingPtr> {
+        unsafe { ArrayListPtr::new(self.address + 0x28) }.get_all()
+    }
+
+    pub fn get_production_buildings(&self) -> Vec<ProductionBuildingPtr> {
+        unsafe { self.get_production_building_list().iter().map(|e| **e).collect() }
     }
 
     fn get<T>(&self, offset: u64) -> T {
@@ -53,7 +56,7 @@ impl Debug for Class20_1Ptr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("Class20Ptr")
             .field("address", &format!("{:#018x}", &self.address))
-            .field("class4s", &self.get_class4s())
+            .field("production_buildings", &self.get_production_buildings())
             .finish()
     }
 }

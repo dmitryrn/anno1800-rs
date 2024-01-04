@@ -1,22 +1,16 @@
 use std::fmt::Debug;
 
-use super::{class32::Class32, class33::Class33, class34::Class34, AnnoPtr, BuildingType};
+use super::{
+    array_list::ArrayListPtr, class32::Class32, class33::Class33, class34::Class34, production_building_buff::ProductionBuildingBuffPtr, AnnoPtr,
+    BuildingType,
+};
 
-pub struct Class4Ptr {
+#[derive(Copy, Clone, PartialEq, Eq)]
+pub struct ProductionBuildingPtr {
     pub address: u64,
 }
 
-impl AnnoPtr for Class4Ptr {
-    unsafe fn new(address: u64) -> Self {
-        Self { address }
-    }
-
-    fn get_address(&self) -> u64 {
-        self.address
-    }
-}
-
-impl Class4Ptr {
+impl ProductionBuildingPtr {
     pub fn get_vtable(&self) -> u64 {
         self.get(0x0000)
     }
@@ -45,6 +39,10 @@ impl Class4Ptr {
         self.get(0x0168)
     }
 
+    pub fn get_buffs_list(&self) -> ArrayListPtr<ProductionBuildingBuffPtr> {
+        unsafe { ArrayListPtr::new(self.address + 0x0188) }
+    }
+
     pub fn get_potential_productivity_factor(&self) -> f32 {
         self.get(0x01f0)
     }
@@ -68,6 +66,10 @@ impl Class4Ptr {
         inputs
     }
 
+    pub fn get_buffs(&self) -> Vec<ProductionBuildingBuffPtr> {
+        self.get_buffs_list().get_all()
+    }
+
     pub fn get_prod_class34(&self) -> Class34 {
         let class33 = self.get_prod_thingy();
         let building_type = self.get_building_type();
@@ -75,9 +77,9 @@ impl Class4Ptr {
     }
 }
 
-impl Debug for Class4Ptr {
+impl Debug for ProductionBuildingPtr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("Class4")
+        f.debug_struct("ProductionBuildingPtr")
             .field("address", &format!("{:#018x}", &self.address))
             //.field("vtable", &format!("{:#018x}", &self.get_vtable()))
             //.field("field_8", &format!("{:#018x}", &self.get_field_8()))
@@ -88,6 +90,17 @@ impl Debug for Class4Ptr {
             .field("prod_class34", &self.get_prod_class34())
             .field("type", &self.get_building_type())
             .field("inputs", &self.get_inputs())
+            //.field("buffs", &self.get_buffs())
             .finish()
+    }
+}
+
+impl AnnoPtr for ProductionBuildingPtr {
+    unsafe fn new(address: u64) -> Self {
+        Self { address }
+    }
+
+    fn get_address(&self) -> u64 {
+        self.address
     }
 }
