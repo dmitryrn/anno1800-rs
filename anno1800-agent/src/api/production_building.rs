@@ -1,8 +1,7 @@
 use std::fmt::Debug;
 
 use super::{
-    array_list::ArrayListPtr, class32::Class32, class33::Class33, class34::Class34, production_building_buff::ProductionBuildingBuffPtr, AnnoPtr,
-    BuildingType,
+    array_list::ArrayListPtr, class32::Class32, class33::Class33, class34::Class34, production_building_buff::ProductionBuildingBuffPtr, AnnoPtr, BuildingType,
 };
 
 #[derive(Copy, Clone, PartialEq, Eq)]

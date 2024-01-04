@@ -40,16 +40,34 @@ pub fn get_module_base() -> u64 {
     })
 }
 
-#[derive(PartialEq, Eq, Hash, Copy, Clone)]
+#[derive(PartialEq, Eq, Hash, Copy, Clone, Ord, PartialOrd)]
 pub struct BuildingType(pub u32);
 pub const BLUEPRINT: BuildingType = BuildingType(0x0000_0000);
 pub const POST_OFFICE: BuildingType = BuildingType(0x0000_0217);
+pub const BAUXITE_MINE: BuildingType = BuildingType(0x00000344);
+pub const ALUMINIUM_SMELTER: BuildingType = BuildingType(0x0000_0346);
+pub const HELIUM_EXTRACTOR: BuildingType = BuildingType(0x0000_0348);
+pub const INDUSTRIAL_OIL_PRESS: BuildingType = BuildingType(0x0000_0586);
+pub const NANDU_FARM: BuildingType = BuildingType(0x0000_1508);
+pub const BALL_MANUFACTORY: BuildingType = BuildingType(0x0000_16ab);
 pub const BOOTMAKERS: BuildingType = BuildingType(0x0001_befc);
 pub const TAILORS_SHOP: BuildingType = BuildingType(0x0001_befe);
 pub const LUMBERJACKS_HUT: BuildingType = BuildingType(0x0001_d4c8);
 pub const VINEYARD: BuildingType = BuildingType(0x0001_d4ce);
 pub const CHAMPAGNE_CELLAR: BuildingType = BuildingType(0x0001_d4d0);
 pub const SPECTACLE_FACTORY: BuildingType = BuildingType(0x0001_d4de);
+pub const COFFEE_ROASTER: BuildingType = BuildingType(0x0001_d4e0);
+pub const FRIED_PLANTAIN_KITCHEN: BuildingType = BuildingType(0x0001_d4e1);
+pub const TORTILLA_MAKER: BuildingType = BuildingType(0x0001_d4e3);
+pub const ALPACA_FARM: BuildingType = BuildingType(0x0001_d4e4);
+pub const BOMBIN_WEAVER: BuildingType = BuildingType(0x0001_d4e5);
+pub const PLANTAIN_PLANTATION: BuildingType = BuildingType(0x0001_d4e9);
+pub const FISH_OIL_FACTORY: BuildingType = BuildingType(0x0001_d4ea);
+pub const PONCHO_DARNER: BuildingType = BuildingType(0x0001_d4eb);
+pub const FELT_PRODUCER: BuildingType = BuildingType(0x0001_d4ec);
+pub const ORCHARD_COCONUT_OIL: BuildingType = BuildingType(0x0002_07e7);
+pub const ORCHARD_CITRUS: BuildingType = BuildingType(0x0002_07e9);
+pub const ORCHARD_CAMPHOR_WAX: BuildingType = BuildingType(0x0002_0dd8);
 pub const GRAIN_FARM: BuildingType = BuildingType(0x000f_6a10);
 pub const CATTLE_FARM: BuildingType = BuildingType(0x000f_6a11);
 pub const HOP_FARM: BuildingType = BuildingType(0x000f_6a12);
@@ -87,29 +105,50 @@ pub const SAND_MINE: BuildingType = BuildingType(0x000f_6a34);
 pub const COPPER_MINE: BuildingType = BuildingType(0x000f_6a36);
 pub const LIMESTONE_QUARRY: BuildingType = BuildingType(0x000f_6a37);
 pub const SALTPETRE_WORKS: BuildingType = BuildingType(0x000f_6a38);
+pub const GOLD_MINE: BuildingType = BuildingType(0x000f_6a39);
 pub const RENDERING_WORKS: BuildingType = BuildingType(0x000f_6a3a);
 pub const SLAUGHTERHOUSE: BuildingType = BuildingType(0x000f_6a3e);
 pub const FLOUR_MILL: BuildingType = BuildingType(0x000f_6a3b);
 pub const MALTHOUSE: BuildingType = BuildingType(0x000f_6a3c);
 pub const FRAMEWORK_KNITTERS: BuildingType = BuildingType(0x000f_6a3d);
+pub const COTTON_MILL: BuildingType = BuildingType(0x000f_6a40);
 pub const GLASSMAKERS: BuildingType = BuildingType(0x000f_6a41);
 pub const MARQUETRY_WORKSHOP: BuildingType = BuildingType(0x000f_6a42);
 pub const FILAMENT_FACTORY: BuildingType = BuildingType(0x000f_6a43);
 pub const BICYCLE_FACTORY: BuildingType = BuildingType(0x000f_6a45);
 pub const CLOCKMAKERS: BuildingType = BuildingType(0x000f_6a46);
 pub const JEWELLERS: BuildingType = BuildingType(0x000f_6a4a);
+pub const COTTON_PLANTATION: BuildingType = BuildingType(0x000f_6a4d);
+pub const RUM_DESTILLERY: BuildingType = BuildingType(0x000f_6a51);
 
 impl Debug for BuildingType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.pad(&match *self {
             BLUEPRINT => "Blueprint".to_string(),
             POST_OFFICE => "Post Office".to_string(),
+            ALUMINIUM_SMELTER => "Aluminium Smelter".to_string(),
+            HELIUM_EXTRACTOR => "Helium Extractor".to_string(),
+            INDUSTRIAL_OIL_PRESS => "Industrial Oil Press".to_string(),
+            NANDU_FARM => "Nandu Farm".to_string(),
+            BALL_MANUFACTORY => "Ball Manufactory".to_string(),
             BOOTMAKERS => "Bootmakers".to_string(),
             TAILORS_SHOP => "Tailor's Shop".to_string(),
             LUMBERJACKS_HUT => "Lumberjack's Hut".to_string(),
             VINEYARD => "Vineyard".to_string(),
             CHAMPAGNE_CELLAR => "Champagne Cellar".to_string(),
             SPECTACLE_FACTORY => "Spectacle Factory".to_string(),
+            COFFEE_ROASTER => "Coffee Roaster".to_string(),
+            FRIED_PLANTAIN_KITCHEN => "Fried Plaintain Kitchen".to_string(),
+            TORTILLA_MAKER => "Tortilla Maker".to_string(),
+            ALPACA_FARM => "Alpaca Farm".to_string(),
+            BOMBIN_WEAVER => "Bombin Weaver".to_string(),
+            PLANTAIN_PLANTATION => "Plantain Plantation".to_string(),
+            FISH_OIL_FACTORY => "Fish Oil Factory".to_string(),
+            PONCHO_DARNER => "Poncho Darner".to_string(),
+            FELT_PRODUCER => "Felt Producer".to_string(),
+            ORCHARD_COCONUT_OIL => "Orchard: Coconut Oil".to_string(),
+            ORCHARD_CITRUS => "Orchard: Citrus".to_string(),
+            ORCHARD_CAMPHOR_WAX => "Orchard: Camphor Wax".to_string(),
             GRAIN_FARM => "Grain Farm".to_string(),
             CATTLE_FARM => "Cattle Farm".to_string(),
             HOP_FARM => "Hop Farm".to_string(),
@@ -147,17 +186,21 @@ impl Debug for BuildingType {
             COPPER_MINE => "Copper Mine".to_string(),
             LIMESTONE_QUARRY => "Limestone Quarry".to_string(),
             SALTPETRE_WORKS => "Saltpetre Works".to_string(),
+            GOLD_MINE => "Gold Mine".to_string(),
             RENDERING_WORKS => "Rendering Works".to_string(),
             SLAUGHTERHOUSE => "Slaughterhouse".to_string(),
             FLOUR_MILL => "Flour Mill".to_string(),
             MALTHOUSE => "Malthouse".to_string(),
             FRAMEWORK_KNITTERS => "Framework Knitters".to_string(),
+            COTTON_MILL => "Cotton Mill".to_string(),
             GLASSMAKERS => "Glassmakers".to_string(),
             MARQUETRY_WORKSHOP => "Marquetry Workshop".to_string(),
             FILAMENT_FACTORY => "Filament Factory".to_string(),
             BICYCLE_FACTORY => "Bicycle Factory".to_string(),
             CLOCKMAKERS => "Clockmakers".to_string(),
             JEWELLERS => "Jewellers".to_string(),
+            COTTON_PLANTATION => "Cotton Plantation".to_string(),
+            RUM_DESTILLERY => "Rum Destillery".to_string(),
             _ => format!("Unknown({:#010x})", self.0),
         })
     }
