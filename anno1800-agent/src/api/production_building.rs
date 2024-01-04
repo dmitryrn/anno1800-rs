@@ -1,7 +1,7 @@
 use std::fmt::Debug;
 
 use super::{
-    array_list::ArrayListPtr, class32::Class32, class33::Class33, class34::Class34, production_building_buff::ProductionBuildingBuffPtr, AnnoPtr, BuildingType,
+    array_list::ArrayListPtr, class32::Class32, class33::Class33, class34::Class34, production_building_buff::ProductionBuildingBuffPtr, AnnoPtr, WareType,
 };
 
 #[derive(Copy, Clone, PartialEq, Eq)]
@@ -34,7 +34,7 @@ impl ProductionBuildingPtr {
         self.get(0x016c) // always 1?
     }
 
-    pub fn get_building_type(&self) -> BuildingType {
+    pub fn get_building_type(&self) -> WareType {
         self.get(0x0168)
     }
 

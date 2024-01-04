@@ -1,4 +1,4 @@
-use super::{AnnoPtr, BuildingType};
+use super::{AnnoPtr, WareType};
 use std::fmt::Debug;
 
 pub struct ProductionBuildingBuffPtr {
@@ -6,7 +6,7 @@ pub struct ProductionBuildingBuffPtr {
 }
 
 impl ProductionBuildingBuffPtr {
-    pub fn get_building_type(&self) -> BuildingType {
+    pub fn get_building_type(&self) -> WareType {
         self.get(0x0000)
     }
 

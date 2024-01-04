@@ -1,12 +1,12 @@
 use std::{
-    collections::{BTreeMap, HashMap},
+    collections::{BTreeMap},
     mem::transmute,
     net::UdpSocket,
     sync::OnceLock,
 };
 use windows::{s, Win32::System::LibraryLoader::GetModuleHandleA};
 
-use crate::api::{class46::Class46Ptr, get_module_base, production_building::ProductionBuildingPtr, AnnoPtr, BuildingType};
+use crate::api::{class46::Class46Ptr, get_module_base, production_building::ProductionBuildingPtr, AnnoPtr, WareType};
 
 static CELL: OnceLock<UdpSocket> = OnceLock::new();
 
@@ -45,7 +45,7 @@ pub unsafe extern "fastcall" fn handle_demand2_loop(class46_ptr: u64, weird_id: 
             class20.address,
             production_buildings.len()
         );
-        let mut map: BTreeMap<BuildingType, (usize, f32)> = BTreeMap::new();
+        let mut map: BTreeMap<WareType, (usize, f32)> = BTreeMap::new();
         for production_building in production_buildings {
             let building_type = production_building.get_building_type();
             let potential_production = production_building.get_prod_thingy().get_class34(&building_type).get_potential_production();
@@ -60,9 +60,7 @@ pub unsafe extern "fastcall" fn handle_demand2_loop(class46_ptr: u64, weird_id: 
         for (key, val) in map.iter() {
             buf.push_str(&format!("    {:<30?} {:4} Buildings, {:6.02}t/min\n", key, val.0, val.1))
         }
-        if class20.address == 0x000001ec4275c930 {
-            send(&buf);
-        }
+        send(&buf);
     }
     let call_base = get_module_base();
     let call_address = call_base + 0xcabc70;
