@@ -52,10 +52,10 @@ pub unsafe extern "fastcall" fn handle_demand2_loop(class46_ptr: u64, weird_id: 
             let buffs = production_building.get_buffs();
             map.entry(building_type).or_default().0 += 1;
             map.entry(building_type).or_default().1 += potential_production;
-            /*buf.push_str(&format!(
+            buf.push_str(&format!(
                 "    {:#018x} {:<30?} ({:.02}/min) {:?}\n",
                 production_building.address, building_type, potential_production, &buffs
-            ))*/
+            ))
         }
         for (key, val) in map.iter() {
             buf.push_str(&format!("    {:<30?} {:4} Buildings, {:6.02}t/min\n", key, val.0, val.1))
