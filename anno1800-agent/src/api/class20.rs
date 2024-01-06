@@ -43,7 +43,7 @@ impl Class20_1Ptr {
         unsafe { ArrayListPtr::new(self.address + 0x28) }.get_all()
     }
 
-    pub fn get_production_buildings(&self) -> Vec<WareProductionPtr> {
+    pub fn get_productions(&self) -> Vec<WareProductionPtr> {
         unsafe { self.get_production_building_list().iter().map(|e| **e).collect() }
     }
 
@@ -56,7 +56,7 @@ impl Debug for Class20_1Ptr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("Class20Ptr")
             .field("address", &format!("{:#018x}", &self.address))
-            .field("production_buildings", &self.get_production_buildings())
+            .field("production_buildings", &self.get_productions())
             .finish()
     }
 }
