@@ -1,11 +1,11 @@
-use super::{AnnoPtr, WareType};
+use super::{ware_type::WareType, AnnoPtr};
 use std::fmt::Debug;
 
-pub struct ProductionBuildingBuffPtr {
+pub struct WareProductionExtraPtr {
     pub address: u64,
 }
 
-impl ProductionBuildingBuffPtr {
+impl WareProductionExtraPtr {
     pub fn get_building_type(&self) -> WareType {
         self.get(0x0000)
     }
@@ -15,7 +15,7 @@ impl ProductionBuildingBuffPtr {
     }
 }
 
-impl Debug for ProductionBuildingBuffPtr {
+impl Debug for WareProductionExtraPtr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("ProductionBuildingBuffPtr")
             .field("address", &format!("{:#018x}", &self.address))
@@ -25,7 +25,7 @@ impl Debug for ProductionBuildingBuffPtr {
     }
 }
 
-impl AnnoPtr for ProductionBuildingBuffPtr {
+impl AnnoPtr for WareProductionExtraPtr {
     unsafe fn new(address: u64) -> Self {
         Self { address }
     }

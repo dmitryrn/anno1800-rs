@@ -1,15 +1,15 @@
 use std::fmt::Debug;
 
 use super::{
-    array_list::ArrayListPtr, class32::Class32, class33::Class33, class34::Class34, production_building_buff::ProductionBuildingBuffPtr, AnnoPtr, WareType,
+    array_list::ArrayListPtr, class32::Class32, class33::Class33, class34::Class34, ware_production_extra::WareProductionExtraPtr, ware_type::WareType, AnnoPtr,
 };
 
 #[derive(Copy, Clone, PartialEq, Eq)]
-pub struct ProductionBuildingPtr {
+pub struct WareProductionPtr {
     pub address: u64,
 }
 
-impl ProductionBuildingPtr {
+impl WareProductionPtr {
     pub fn get_vtable(&self) -> u64 {
         self.get(0x0000)
     }
@@ -34,11 +34,11 @@ impl ProductionBuildingPtr {
         self.get(0x016c) // always 1?
     }
 
-    pub fn get_building_type(&self) -> WareType {
+    pub fn get_ware_type(&self) -> WareType {
         self.get(0x0168)
     }
 
-    pub fn get_buffs_list(&self) -> ArrayListPtr<ProductionBuildingBuffPtr> {
+    pub fn get_buffs_list(&self) -> ArrayListPtr<WareProductionExtraPtr> {
         unsafe { ArrayListPtr::new(self.address + 0x0188) }
     }
 
@@ -65,18 +65,18 @@ impl ProductionBuildingPtr {
         inputs
     }
 
-    pub fn get_buffs(&self) -> Vec<ProductionBuildingBuffPtr> {
+    pub fn get_buffs(&self) -> Vec<WareProductionExtraPtr> {
         self.get_buffs_list().get_all()
     }
 
     pub fn get_prod_class34(&self) -> Class34 {
         let class33 = self.get_prod_thingy();
-        let building_type = self.get_building_type();
+        let building_type = self.get_ware_type();
         class33.get_class34(&building_type)
     }
 }
 
-impl Debug for ProductionBuildingPtr {
+impl Debug for WareProductionPtr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("ProductionBuildingPtr")
             .field("address", &format!("{:#018x}", &self.address))
@@ -87,14 +87,14 @@ impl Debug for ProductionBuildingPtr {
             .field("potential_productivity_factor", &format!("{:.2}", &self.get_potential_productivity_factor()))
             .field("millis_per_cycle", &format!("{:05}", &self.get_millis_per_cycle()))
             .field("prod_class34", &self.get_prod_class34())
-            .field("type", &self.get_building_type())
+            .field("type", &self.get_ware_type())
             .field("inputs", &self.get_inputs())
             //.field("buffs", &self.get_buffs())
             .finish()
     }
 }
 
-impl AnnoPtr for ProductionBuildingPtr {
+impl AnnoPtr for WareProductionPtr {
     unsafe fn new(address: u64) -> Self {
         Self { address }
     }

@@ -2,7 +2,7 @@ use std::fmt::Debug;
 
 use log::warn;
 
-use super::{array_list::ArrayListPtr, get_module_base, production_building::ProductionBuildingPtr, AnnoPtr};
+use super::{array_list::ArrayListPtr, get_module_base, ware_production::WareProductionPtr, AnnoPtr};
 
 pub enum Class20 {
     Class20_1Ptr(Class20_1Ptr),
@@ -39,11 +39,11 @@ impl Class20_1Ptr {
         self.get(0x0000)
     }
 
-    pub fn get_production_building_list(&self) -> Vec<*const ProductionBuildingPtr> {
+    pub fn get_production_building_list(&self) -> Vec<*const WareProductionPtr> {
         unsafe { ArrayListPtr::new(self.address + 0x28) }.get_all()
     }
 
-    pub fn get_production_buildings(&self) -> Vec<ProductionBuildingPtr> {
+    pub fn get_production_buildings(&self) -> Vec<WareProductionPtr> {
         unsafe { self.get_production_building_list().iter().map(|e| **e).collect() }
     }
 

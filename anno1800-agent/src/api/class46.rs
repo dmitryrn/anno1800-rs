@@ -1,4 +1,4 @@
-use super::{class20::Class20_1Ptr, AnnoPtr, HashMapPtr};
+use super::{class20::Class20_1Ptr, hash_map::HashMapPtr, AnnoPtr};
 use std::fmt::Debug;
 
 pub struct Class46Ptr {

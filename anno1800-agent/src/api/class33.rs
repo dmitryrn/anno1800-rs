@@ -2,7 +2,7 @@ use std::mem::transmute;
 
 use windows::{s, Win32::System::LibraryLoader::GetModuleHandleA};
 
-use super::{class34::Class34, WareType};
+use super::{class34::Class34, ware_type::WareType};
 
 pub struct Class33 {
     pub address: u64,
