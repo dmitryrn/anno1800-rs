@@ -1,4 +1,4 @@
-use super::{class59::Class59Ptr, AnnoPtr, string_buffer::StringBufferPtr};
+use super::{class59::Class59Ptr, AnnoPtr};
 
 pub struct AreaObjectManagerPtr {
     pub address: u64,

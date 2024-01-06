@@ -1,4 +1,3 @@
-use log::debug;
 use std::{mem::transmute, net::UdpSocket, sync::OnceLock};
 use windows::{s, Win32::System::LibraryLoader::GetModuleHandleA};
 

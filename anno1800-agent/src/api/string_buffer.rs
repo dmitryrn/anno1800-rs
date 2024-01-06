@@ -6,7 +6,11 @@ pub struct StringBufferPtr {
 
 impl StringBufferPtr {
     pub unsafe fn get_buf(&self) -> u64 {
-        self.get(0x0000)
+        if self.get_len() >= 8 {
+            self.get(0x0000)
+        } else {
+            self.address
+        }
     }
 
     pub unsafe fn get_len(&self) -> u64 {

@@ -1,4 +1,4 @@
-use super::{AnnoPtr, string_buffer::StringBufferPtr};
+use super::{string_buffer::StringBufferPtr, AnnoPtr};
 
 pub struct Class59Ptr {
     pub address: u64,
