@@ -13,6 +13,7 @@ struct ProductionMessage {
     ware_type: u32,
     potential_production: f32,
     potential_extra_production: Vec<ExtraProductionMessage>,
+    inputs: Vec<u32>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -33,6 +34,7 @@ pub unsafe fn handle_demand3(area_object_manager: AreaObjectManagerPtr) {
     for production_building in production_buildings {
         let building_type = production_building.get_ware_type();
         let potential_production = production_building.get_prod_thingy().get_class34(&building_type).get_potential_production();
+        let inputs = production_building.get_inputs();
         let buffs = production_building.get_buffs();
         let message = ProductionMessage {
             address: production_building.address,
@@ -46,6 +48,7 @@ pub unsafe fn handle_demand3(area_object_manager: AreaObjectManagerPtr) {
                     potential_production: e.get_value(),
                 })
                 .collect(),
+            inputs: inputs.iter().map(|e| e.get_ware_type().into()).collect(),
         };
         send(&format!("{}\n", &serde_json::to_string(&message).unwrap()));
     }
