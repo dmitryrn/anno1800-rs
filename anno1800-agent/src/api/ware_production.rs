@@ -59,6 +59,10 @@ impl WareProductionPtr {
         self.get(0x01f8)
     }
 
+    pub fn get_200(&self) -> u8 {
+        self.get(0x0200)
+    }
+
     pub fn get_inputs(&self) -> Vec<Class32> {
         let mut inputs = vec![];
         let mut input = self.get_first_input();
@@ -81,7 +85,11 @@ impl WareProductionPtr {
     }
 
     pub fn get_potential_production(&self) -> f32 {
-        60000.0 / self.get_millis_per_cycle() as f32 * self.get_16c() as f32 * self.get_potential_productivity_factor()
+        if self.get_200() == 0 {
+            60000.0 / self.get_millis_per_cycle() as f32 * self.get_16c() as f32 * self.get_potential_productivity_factor()
+        } else {
+            0.0
+        }
     }
 }
 
