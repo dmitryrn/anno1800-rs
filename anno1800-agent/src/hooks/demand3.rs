@@ -2,7 +2,10 @@ use std::slice;
 
 use serde::{Deserialize, Serialize};
 
-use crate::api::{area_object_manager::AreaObjectManagerPtr, ware_type::BLUEPRINT};
+use crate::api::{
+    area_object_manager::AreaObjectManagerPtr,
+    ware_type::{BLUEPRINT, DEPOSIT},
+};
 
 use super::send;
 
@@ -50,12 +53,16 @@ pub unsafe fn handle_demand3(area_object_manager: AreaObjectManagerPtr) {
             potential_extra_production: buffs
                 .iter()
                 .map(|e| ExtraProductionMessage {
-                    ware_type: e.get_building_type().into(),
-                    ware_string: format!("{:?}", e.get_building_type()),
+                    ware_type: e.get_ware_type().into(),
+                    ware_string: format!("{:?}", e.get_ware_type()),
                     potential_production: e.get_value(),
                 })
                 .collect(),
-            inputs: inputs.iter().map(|e| e.get_ware_type().into()).collect(),
+            inputs: inputs
+                .iter()
+                .filter(|e| e.get_ware_type() != DEPOSIT)
+                .map(|e| e.get_ware_type().into())
+                .collect(),
         };
         send(&format!("{}\n", &serde_json::to_string(&message).unwrap()));
     }

@@ -6,7 +6,7 @@ pub struct WareProductionExtraPtr {
 }
 
 impl WareProductionExtraPtr {
-    pub fn get_building_type(&self) -> WareType {
+    pub fn get_ware_type(&self) -> WareType {
         self.get(0x0000)
     }
 
@@ -19,7 +19,7 @@ impl Debug for WareProductionExtraPtr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("ProductionBuildingBuffPtr")
             .field("address", &format!("{:#018x}", &self.address))
-            .field("building_type", &self.get_building_type())
+            .field("building_type", &self.get_ware_type())
             .field("value", &format!("{:.2}", &self.get_value()))
             .finish()
     }
