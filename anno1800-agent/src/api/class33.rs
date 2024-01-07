@@ -4,11 +4,11 @@ use windows::{s, Win32::System::LibraryLoader::GetModuleHandleA};
 
 use super::{class34::Class34, ware_type::WareType};
 
-pub struct Class33 {
+pub struct Class33Ptr {
     pub address: u64,
 }
 
-impl Class33 {
+impl Class33Ptr {
     pub unsafe fn new(address: u64) -> Self {
         Self { address }
     }

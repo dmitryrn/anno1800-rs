@@ -1,7 +1,8 @@
 use std::fmt::Debug;
 
 use super::{
-    array_list::ArrayListPtr, class32::Class32, class33::Class33, class34::Class34, ware_production_extra::WareProductionExtraPtr, ware_type::WareType, AnnoPtr,
+    array_list::ArrayListPtr, class32::Class32, class33::Class33Ptr, class34::Class34, ware_production_extra::WareProductionExtraPtr, ware_type::WareType,
+    AnnoPtr,
 };
 
 #[derive(Copy, Clone, PartialEq, Eq)]
@@ -18,8 +19,12 @@ impl WareProductionPtr {
         self.get(0x0008)
     }
 
-    pub fn get_prod_thingy(&self) -> Class33 {
-        unsafe { Class33::new(self.address + 0x00b0) }
+    pub fn get_prod_thingy(&self) -> Class33Ptr {
+        unsafe { Class33Ptr::new(self.address + 0x0090) }
+    }
+
+    pub fn get_prod_thingy2(&self) -> Class33Ptr {
+        unsafe { Class33Ptr::new(self.address + 0x00b0) }
     }
 
     pub fn get_first_input(&self) -> u64 {
@@ -73,6 +78,10 @@ impl WareProductionPtr {
         let class33 = self.get_prod_thingy();
         let building_type = self.get_ware_type();
         class33.get_class34(&building_type)
+    }
+
+    pub fn get_potential_production(&self) -> f32 {
+        60000.0 / self.get_millis_per_cycle() as f32 * self.get_16c() as f32 * self.get_potential_productivity_factor()
     }
 }
 

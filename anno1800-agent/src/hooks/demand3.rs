@@ -29,15 +29,15 @@ pub unsafe fn handle_demand3(area_object_manager: AreaObjectManagerPtr) {
     let island_name = String::from_utf16_lossy(slice::from_raw_parts(buf as *const u16, string_buffer.get_len() as _));
     let class46 = area_object_manager.get_class46();
     let class20 = class46.get_class20(0x0301);
-    let production_buildings = class20.get_productions();
+    let productions = class20.get_productions();
 
-    for production_building in production_buildings {
-        let building_type = production_building.get_ware_type();
-        let potential_production = production_building.get_prod_thingy().get_class34(&building_type).get_potential_production();
-        let inputs = production_building.get_inputs();
-        let buffs = production_building.get_buffs();
+    for production in productions {
+        let building_type = production.get_ware_type();
+        let potential_production = production.get_potential_production();
+        let inputs = production.get_inputs();
+        let buffs = production.get_buffs();
         let message = ProductionMessage {
-            address: production_building.address,
+            address: production.address,
             island: island_name.clone(),
             ware_type: building_type.into(),
             potential_production,
