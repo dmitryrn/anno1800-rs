@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::api::{
     area_object_manager::AreaObjectManagerPtr,
-    ware_type::{BLUEPRINT, DEPOSIT},
+    ware_type::{BLUEPRINT, CULTIVATION_AREA, DEPOSIT},
 };
 
 use super::send;
@@ -60,7 +60,7 @@ pub unsafe fn handle_demand3(area_object_manager: AreaObjectManagerPtr) {
                 .collect(),
             inputs: inputs
                 .iter()
-                .filter(|e| e.get_ware_type() != DEPOSIT)
+                .filter(|e| e.get_ware_type() != DEPOSIT && e.get_ware_type() != CULTIVATION_AREA)
                 .map(|e| e.get_ware_type().into())
                 .collect(),
         };
