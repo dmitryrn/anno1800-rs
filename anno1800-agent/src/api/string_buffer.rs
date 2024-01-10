@@ -1,3 +1,5 @@
+use std::slice;
+
 use super::AnnoPtr;
 
 pub struct StringBufferPtr {
@@ -15,6 +17,10 @@ impl StringBufferPtr {
 
     pub unsafe fn get_len(&self) -> u64 {
         self.get(0x0010)
+    }
+
+    pub unsafe fn get_string(&self) -> String {
+        String::from_utf16_lossy(slice::from_raw_parts(self.get_buf() as *const u16, self.get_len() as _))
     }
 }
 

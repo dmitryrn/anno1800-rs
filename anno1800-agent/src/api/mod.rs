@@ -2,9 +2,11 @@ use std::sync::OnceLock;
 
 use windows::{s, Win32::System::LibraryLoader::GetModuleHandleA};
 pub mod area_object_manager;
+pub mod area_residence_consumption_manager;
 pub mod array_list;
 pub mod class11;
 pub mod class20;
+pub mod class30;
 pub mod class32;
 pub mod class33;
 pub mod class34;

@@ -1,31 +1,11 @@
 use std::slice;
 
-use serde::{Deserialize, Serialize};
-
 use crate::api::{
     area_object_manager::AreaObjectManagerPtr,
     ware_type::{BLUEPRINT, CULTIVATION_AREA, DEPOSIT},
 };
 
-use super::send;
-
-#[derive(Serialize, Deserialize)]
-struct ProductionMessage {
-    address: u64,
-    island: String,
-    ware_type: u32,
-    ware_string: String,
-    potential_production: f32,
-    potential_extra_production: Vec<ExtraProductionMessage>,
-    inputs: Vec<u32>,
-}
-
-#[derive(Serialize, Deserialize)]
-struct ExtraProductionMessage {
-    ware_type: u32,
-    ware_string: String,
-    potential_production: f32,
-}
+use super::{send, AnnoMessage, ExtraProductionMessage, ProductionMessage};
 
 pub unsafe fn handle_demand3(area_object_manager: AreaObjectManagerPtr) {
     let class59 = area_object_manager.get_class59();
@@ -44,25 +24,28 @@ pub unsafe fn handle_demand3(area_object_manager: AreaObjectManagerPtr) {
         let potential_production = production.get_potential_production();
         let inputs = production.get_inputs();
         let buffs = production.get_buffs();
-        let message = ProductionMessage {
-            address: production.address,
-            island: island_name.clone(),
-            ware_type: ware_type.into(),
-            ware_string: format!("{:?}", ware_type),
-            potential_production,
-            potential_extra_production: buffs
-                .iter()
-                .map(|e| ExtraProductionMessage {
-                    ware_type: e.get_ware_type().into(),
-                    ware_string: format!("{:?}", e.get_ware_type()),
-                    potential_production: e.get_value(),
-                })
-                .collect(),
-            inputs: inputs
-                .iter()
-                .filter(|e| e.get_ware_type() != DEPOSIT && e.get_ware_type() != CULTIVATION_AREA)
-                .map(|e| e.get_ware_type().into())
-                .collect(),
+        let message = AnnoMessage {
+            production: Some(ProductionMessage {
+                address: production.address,
+                island: island_name.clone(),
+                ware_type: ware_type.into(),
+                ware_string: format!("{:?}", ware_type),
+                potential_production,
+                potential_extra_production: buffs
+                    .iter()
+                    .map(|e| ExtraProductionMessage {
+                        ware_type: e.get_ware_type().into(),
+                        ware_string: format!("{:?}", e.get_ware_type()),
+                        potential_production: e.get_value(),
+                    })
+                    .collect(),
+                inputs: inputs
+                    .iter()
+                    .filter(|e| e.get_ware_type() != DEPOSIT && e.get_ware_type() != CULTIVATION_AREA)
+                    .map(|e| e.get_ware_type().into())
+                    .collect(),
+            }),
+            residence_consumption: None,
         };
         send(&format!("{}\n", &serde_json::to_string(&message).unwrap()));
     }
