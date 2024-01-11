@@ -15,7 +15,8 @@ pub unsafe fn handle_residences(arcm: AreaResidenceConsumptionManagerPtr) {
     }
 
     let message = AnnoMessage {
-        production: None,
+        production_building: None,
+        consumption_building: None,
         residence_consumption: Some(ResidenceConsumptionsMessage {
             island: island_name,
             consumptions,

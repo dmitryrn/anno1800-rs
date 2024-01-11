@@ -4,7 +4,7 @@ use windows::{s, Win32::System::LibraryLoader::GetModuleHandleA};
 
 use crate::api::{
     area_object_manager::AreaObjectManagerPtr, area_residence_consumption_manager::AreaResidenceConsumptionManagerPtr, get_module_offset,
-    ware_production::WareProductionPtr, AnnoPtr,
+    production_building::ProductionBuildingPtr, AnnoPtr,
 };
 
 use self::residence_consumption::handle_residences;
@@ -15,7 +15,8 @@ static CELL: OnceLock<UdpSocket> = OnceLock::new();
 
 #[derive(Serialize, Deserialize)]
 struct AnnoMessage {
-    production: Option<ProductionMessage>,
+    production_building: Option<ProductionMessage>,
+    consumption_building: Option<ConsumptionMessage>,
     residence_consumption: Option<ResidenceConsumptionsMessage>,
 }
 
@@ -38,6 +39,15 @@ struct ExtraProductionMessage {
 }
 
 #[derive(Serialize, Deserialize)]
+struct ConsumptionMessage {
+    address: u64,
+    island: String,
+    potential_consumption: f32,
+    potential_extra_production: Vec<ExtraProductionMessage>,
+    inputs: Vec<u32>,
+}
+
+#[derive(Serialize, Deserialize)]
 struct ResidenceConsumptionsMessage {
     island: String,
     consumptions: Vec<ResidenceConsumptionMessage>,
@@ -51,7 +61,7 @@ struct ResidenceConsumptionMessage {
 }
 
 pub unsafe extern "fastcall" fn handle_update_potential_production_hook(production_building_ptr: u64) {
-    let production_building = WareProductionPtr::new(production_building_ptr);
+    let production_building = ProductionBuildingPtr::new(production_building_ptr);
     let socket = get_socket();
     socket
         .send_to(format!("{:?}\n", production_building).as_bytes(), "192.168.178.33:1800")

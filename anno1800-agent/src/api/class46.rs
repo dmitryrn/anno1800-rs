@@ -1,5 +1,8 @@
-use super::{class20::Class20_1Ptr, hash_map::HashMapPtr, AnnoPtr};
+use super::{consumption_buildings::ConsumptionBuildingsPtr, hash_map::HashMapPtr, production_buildings::ProductionBuildingsPtr, AnnoPtr};
 use std::fmt::Debug;
+
+const PRODUCTION_BUILDINGS_INDEX: u32 = 0x0301;
+const CONSUMPTION_BUILDINGS_INDEX: u32 = 0x02fd;
 
 pub struct Class46Ptr {
     pub address: u64,
@@ -8,12 +11,6 @@ pub struct Class46Ptr {
 impl Class46Ptr {
     pub fn get_vtable(&self) -> u64 {
         self.get(0x0000)
-    }
-
-    pub fn get_class20(&self, weird_id: u32) -> Class20_1Ptr {
-        let map = self.get_hashmap_ptr();
-        let address = map.get_entry(weird_id);
-        unsafe { Class20_1Ptr::new(address) }
     }
 
     pub fn get_hashmap_ptr(&self) -> HashMapPtr {
@@ -26,6 +23,18 @@ impl Class46Ptr {
 
     pub fn get_field_70(&self) -> u64 {
         self.get(0x0070)
+    }
+
+    pub unsafe fn get_consumption_buildings(&self) -> ConsumptionBuildingsPtr {
+        let map = self.get_hashmap_ptr();
+        let address = map.get_entry(CONSUMPTION_BUILDINGS_INDEX);
+        ConsumptionBuildingsPtr::new(address)
+    }
+
+    pub unsafe fn get_production_buildings(&self) -> ProductionBuildingsPtr {
+        let map = self.get_hashmap_ptr();
+        let address = map.get_entry(PRODUCTION_BUILDINGS_INDEX);
+        ProductionBuildingsPtr::new(address)
     }
 
     fn get<T>(&self, offset: u64) -> T {
@@ -45,9 +54,6 @@ impl AnnoPtr for Class46Ptr {
 
 impl Debug for Class46Ptr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("Class46Ptr")
-            .field("address", &format!("{:#018x}", &self.address))
-            .field("class20", &format!("{:?}", &self.get_class20(0x301)))
-            .finish()
+        f.debug_struct("Class46Ptr").field("address", &format!("{:#018x}", &self.address)).finish()
     }
 }

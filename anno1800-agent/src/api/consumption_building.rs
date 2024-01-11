@@ -6,11 +6,11 @@ use super::{
 };
 
 #[derive(Copy, Clone, PartialEq, Eq)]
-pub struct WareProductionPtr {
+pub struct ConsumptionBuildingPtr {
     pub address: u64,
 }
 
-impl WareProductionPtr {
+impl ConsumptionBuildingPtr {
     pub fn get_vtable(&self) -> u64 {
         self.get(0x0000)
     }
@@ -84,18 +84,19 @@ impl WareProductionPtr {
         class33.get_class34(&building_type)
     }
 
-    pub fn get_potential_production(&self) -> f32 {
+    pub fn get_cycles_per_minute(&self) -> f32 {
         if self.get_200() == 0 {
-            60000.0 / self.get_millis_per_cycle() as f32 * self.get_16c() as f32 * self.get_potential_productivity_factor()
+            60000.0 / self.get_millis_per_cycle() as f32 * self.get_potential_productivity_factor()
+        // * self.get_16c() as f32
         } else {
             0.0
         }
     }
 }
 
-impl Debug for WareProductionPtr {
+impl Debug for ConsumptionBuildingPtr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("ProductionBuildingPtr")
+        f.debug_struct("ConsumptionBuildingPtr")
             .field("address", &format!("{:#018x}", &self.address))
             //.field("vtable", &format!("{:#018x}", &self.get_vtable()))
             //.field("field_8", &format!("{:#018x}", &self.get_field_8()))
@@ -111,7 +112,7 @@ impl Debug for WareProductionPtr {
     }
 }
 
-impl AnnoPtr for WareProductionPtr {
+impl AnnoPtr for ConsumptionBuildingPtr {
     unsafe fn new(address: u64) -> Self {
         Self { address }
     }
