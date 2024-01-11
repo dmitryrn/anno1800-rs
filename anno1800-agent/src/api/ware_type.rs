@@ -4,6 +4,7 @@ use std::fmt::Debug;
 pub struct WareType(pub u32);
 pub const BLUEPRINT: WareType = WareType(0x0000_0000);
 pub const LOCAL_MAIL: WareType = WareType(0x0000_0217);
+pub const REGIONAL_MAIL: WareType = WareType(0x0000_0218);
 pub const BAUXITE: WareType = WareType(0x0000_0344);
 pub const ALUMINIUM_PROFILES: WareType = WareType(0x0000_0346);
 pub const HELIUM: WareType = WareType(0x0000_0348);
@@ -15,6 +16,7 @@ pub const CARE_PACKAGES: WareType = WareType(0x0000_0351);
 pub const INDUSTRIAL_LUBRICANT: WareType = WareType(0x0000_0586);
 pub const DEPOSIT: WareType = WareType(0x0000_0637);
 pub const CULTIVATION_AREA: WareType = WareType(0x0000_07a3);
+pub const OVERSEAS_MAIL: WareType = WareType(0x0000_09dc);
 pub const CALAMARI: WareType = WareType(0x0000_1504);
 pub const JALEA: WareType = WareType(0x0000_1505);
 pub const ICE_CREAM: WareType = WareType(0x0000_1506);
@@ -73,6 +75,7 @@ pub const SEAFOOD_STEW: WareType = WareType(0x0001_beea);
 pub const CLAY_PIPES: WareType = WareType(0x0001_beee);
 pub const LEATHER_BOOTS: WareType = WareType(0x0001_befc);
 pub const TAILORED_SUITS: WareType = WareType(0x0001_befe);
+pub const TELEPHONES: WareType = WareType(0x0001_beff);
 pub const ILLUMINATED_SCRIPT: WareType = WareType(0x0001_cbc2);
 pub const LANTERNS: WareType = WareType(0x0001_cbc3);
 pub const ORNATE_CANDLES: WareType = WareType(0x0001_cbc5);
@@ -100,6 +103,7 @@ pub const CITRUS: WareType = WareType(0x0002_07e9);
 pub const SHAMPOO: WareType = WareType(0x0002_083d);
 pub const JAM: WareType = WareType(0x0002_083f);
 pub const LEMONADE: WareType = WareType(0x0002_0841);
+pub const SOUVENIRS: WareType = WareType(0x0002_099c);
 pub const CAMPHOR_WAX: WareType = WareType(0x0002_0dd8);
 pub const ELEVATOR: WareType = WareType(0x0002_0ddf);
 pub const ETHANOL: WareType = WareType(0x0002_0fda);
@@ -177,6 +181,7 @@ impl Debug for WareType {
         f.pad(&match *self {
             BLUEPRINT => "Blueprint".to_string(),
             LOCAL_MAIL => "Local Mail".to_string(),
+            REGIONAL_MAIL => "Regional Mail".to_string(),
             BAUXITE => "Bauxite".to_string(),
             ALUMINIUM_PROFILES => "Aluminium Profiles".to_string(),
             HELIUM => "Helium".to_string(),
@@ -186,6 +191,9 @@ impl Debug for WareType {
             PAMPHLETS => "Pamphlets".to_string(),
             CARE_PACKAGES => "Care Packages".to_string(),
             INDUSTRIAL_LUBRICANT => "Industrial Lubricant".to_string(),
+            DEPOSIT => "Deposit".to_string(),
+            CULTIVATION_AREA => "Cultivation Area".to_string(),
+            OVERSEAS_MAIL => "Overseas Mail".to_string(),
             CALAMARI => "Calamari".to_string(),
             JALEA => "Jalea".to_string(),
             ICE_CREAM => "Ice Cream".to_string(),
@@ -244,6 +252,7 @@ impl Debug for WareType {
             CLAY_PIPES => "Clay Pipes".to_string(),
             LEATHER_BOOTS => "Leather Boots".to_string(),
             TAILORED_SUITS => "Tailored Suits".to_string(),
+            TELEPHONES => "Telephones".to_string(),
             ILLUMINATED_SCRIPT => "Illuminated Script".to_string(),
             LANTERNS => "Lanterns".to_string(),
             ORNATE_CANDLES => "Ornate Candles".to_string(),
@@ -268,6 +277,9 @@ impl Debug for WareType {
             COCONUT_OIL => "Coconut Oil".to_string(),
             CITRUS => "Citrus".to_string(),
             SHAMPOO => "Shampoo".to_string(),
+            JAM => "Jam".to_string(),
+            LEMONADE => "Lemonade".to_string(),
+            SOUVENIRS => "Souvenirs".to_string(),
             CAMPHOR_WAX => "Camphor Wax".to_string(),
             ETHANOL => "Ethanol".to_string(),
             CELLULOID => "Celluloid".to_string(),
