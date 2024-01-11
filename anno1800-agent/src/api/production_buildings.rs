@@ -25,6 +25,7 @@ impl ProductionBuildingsPtr {
     }
 
     pub fn get_production_building_list(&self) -> Vec<*const ProductionBuildingPtr> {
+        //TODO is this truly correct?
         unsafe { ArrayListPtr::new(self.address + 0x28) }.get_all()
     }
 
@@ -41,7 +42,7 @@ impl Debug for ProductionBuildingsPtr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("ProductionBuildingsPtr")
             .field("address", &format!("{:#018x}", &self.address))
-            .field("production_buildings", &self.get_vec())
+            .field("buildings", &self.get_vec())
             .finish()
     }
 }

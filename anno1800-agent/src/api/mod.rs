@@ -12,6 +12,8 @@ pub mod class46;
 pub mod class59;
 pub mod consumption_building;
 pub mod consumption_buildings;
+pub mod energy_building;
+pub mod energy_buildings;
 pub mod hash_map;
 pub mod production_building;
 pub mod production_buildings;

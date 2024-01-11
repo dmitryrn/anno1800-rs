@@ -1,8 +1,12 @@
-use super::{consumption_buildings::ConsumptionBuildingsPtr, hash_map::HashMapPtr, production_buildings::ProductionBuildingsPtr, AnnoPtr};
+use super::{
+    consumption_buildings::ConsumptionBuildingsPtr, energy_buildings::EnergyBuildingsPtr, hash_map::HashMapPtr, production_buildings::ProductionBuildingsPtr,
+    AnnoPtr,
+};
 use std::fmt::Debug;
 
-const PRODUCTION_BUILDINGS_INDEX: u32 = 0x0301;
 const CONSUMPTION_BUILDINGS_INDEX: u32 = 0x02fd;
+const PRODUCTION_BUILDINGS_INDEX: u32 = 0x0301;
+const ENERGY_BUILDINGS_INDEX: u32 = 0x0315;
 
 pub struct Class46Ptr {
     pub address: u64,
@@ -25,16 +29,22 @@ impl Class46Ptr {
         self.get(0x0070)
     }
 
+    pub unsafe fn get_production_buildings(&self) -> ProductionBuildingsPtr {
+        let map = self.get_hashmap_ptr();
+        let address = map.get_entry(PRODUCTION_BUILDINGS_INDEX);
+        ProductionBuildingsPtr::new(address)
+    }
+
     pub unsafe fn get_consumption_buildings(&self) -> ConsumptionBuildingsPtr {
         let map = self.get_hashmap_ptr();
         let address = map.get_entry(CONSUMPTION_BUILDINGS_INDEX);
         ConsumptionBuildingsPtr::new(address)
     }
 
-    pub unsafe fn get_production_buildings(&self) -> ProductionBuildingsPtr {
+    pub unsafe fn get_energy_buildings(&self) -> EnergyBuildingsPtr {
         let map = self.get_hashmap_ptr();
-        let address = map.get_entry(PRODUCTION_BUILDINGS_INDEX);
-        ProductionBuildingsPtr::new(address)
+        let address = map.get_entry(ENERGY_BUILDINGS_INDEX);
+        EnergyBuildingsPtr::new(address)
     }
 
     fn get<T>(&self, offset: u64) -> T {
