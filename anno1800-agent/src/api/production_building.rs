@@ -86,7 +86,7 @@ impl ProductionBuildingPtr {
 
     pub fn get_potential_production(&self) -> f32 {
         if self.get_200() == 0 {
-            60000.0 / self.get_millis_per_cycle() as f32 * self.get_potential_productivity_factor()
+            60000.0 / self.get_millis_per_cycle() as f32 * self.get_16c() as f32 * self.get_potential_productivity_factor()
         // * self.get_16c() as f32
         } else {
             0.0

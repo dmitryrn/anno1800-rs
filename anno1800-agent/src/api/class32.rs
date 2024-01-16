@@ -15,7 +15,7 @@ impl Class32 {
         self.get(0x0000)
     }
 
-    pub fn get_4(&self) -> f32 {
+    pub fn get_4(&self) -> u32 {
         self.get(0x0004)
     }
 

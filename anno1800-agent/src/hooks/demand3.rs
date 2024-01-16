@@ -8,7 +8,7 @@ use crate::api::{
     ware_type::{BLUEPRINT, CULTIVATION_AREA, DEPOSIT},
 };
 
-use super::{send, AnnoMessage, ConsumptionMessage, ExtraProductionMessage, ProductionMessage};
+use super::{send, AnnoMessage, ConsumptionMessage, ExtraProductionMessage, ProductionMessage, InputMessage};
 
 pub unsafe fn handle_demand3(area_object_manager: AreaObjectManagerPtr) {
     let class59 = area_object_manager.get_class59();
@@ -48,7 +48,10 @@ pub unsafe fn handle_production_buildings(island_name: &str, buildings: &[Produc
                 inputs: inputs
                     .iter()
                     .filter(|e| e.get_ware_type() != DEPOSIT && e.get_ware_type() != CULTIVATION_AREA)
-                    .map(|e| e.get_ware_type().into())
+                    .map(|e| InputMessage {
+                        ware_type: e.get_ware_type().into(),
+                        multiplier: e.get_4(),
+                    })
                     .collect(),
             }),
             consumption_building: None,

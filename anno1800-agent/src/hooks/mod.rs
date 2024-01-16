@@ -28,7 +28,7 @@ struct ProductionMessage {
     ware_string: String,
     potential_production: f32,
     potential_extra_production: Vec<ExtraProductionMessage>,
-    inputs: Vec<u32>,
+    inputs: Vec<InputMessage>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -36,6 +36,12 @@ struct ExtraProductionMessage {
     ware_type: u32,
     ware_string: String,
     potential_production: f32,
+}
+
+#[derive(Serialize, Deserialize)]
+struct InputMessage {
+    ware_type: u32,
+    multiplier: u32,
 }
 
 #[derive(Serialize, Deserialize)]

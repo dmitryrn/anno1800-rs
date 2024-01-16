@@ -109,6 +109,9 @@ pub const CAMPHOR_WAX: WareType = WareType(0x0002_0dd8);
 pub const ELEVATOR: WareType = WareType(0x0002_0ddf);
 pub const ETHANOL: WareType = WareType(0x0002_0fda);
 pub const CELLULOID: WareType = WareType(0x0002_0fee);
+pub const CHEWING_GUM: WareType = WareType(0x0002_1012);
+pub const BISCUITS: WareType = WareType(0x0002_103d);
+pub const COGNAC: WareType = WareType(0x0002_1042);
 pub const FUEL: WareType = WareType(0x0004_1eda);
 pub const GRAIN: WareType = WareType(0x000f_6a10);
 pub const BEEF: WareType = WareType(0x000f_6a11);
@@ -285,6 +288,7 @@ impl Debug for WareType {
             CAMPHOR_WAX => "Camphor Wax".to_string(),
             ETHANOL => "Ethanol".to_string(),
             CELLULOID => "Celluloid".to_string(),
+            CHEWING_GUM => "Chewing Gum".to_string(),
             FUEL => "Fuel".to_string(),
             GRAIN => "Grain".to_string(),
             BEEF => "Beef".to_string(),
