@@ -50,6 +50,7 @@ pub unsafe fn handle_production_buildings(island_name: &str, buildings: &[Produc
                     .filter(|e| e.get_ware_type() != DEPOSIT && e.get_ware_type() != CULTIVATION_AREA)
                     .map(|e| InputMessage {
                         ware_type: e.get_ware_type().into(),
+                        ware_string: format!("{:?}", e.get_ware_type()),
                         multiplier: e.get_4(),
                     })
                     .collect(),

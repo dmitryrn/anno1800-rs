@@ -41,6 +41,7 @@ struct ExtraProductionMessage {
 #[derive(Serialize, Deserialize)]
 struct InputMessage {
     ware_type: u32,
+    ware_string: String,
     multiplier: u32,
 }
 
@@ -98,5 +99,5 @@ fn get_socket() -> &'static UdpSocket {
 
 fn send(str: &str) {
     let socket = get_socket();
-    socket.send_to(str.as_bytes(), "192.168.178.33:1800").unwrap();
+    socket.send_to(str.as_bytes(), "127.0.0.1:1800").unwrap();
 }

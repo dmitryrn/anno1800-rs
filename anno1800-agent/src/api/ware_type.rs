@@ -87,7 +87,7 @@ pub const LOBSTER: WareType = WareType(0x0001_cfc8);
 pub const WOOD: WareType = WareType(0x0001_d4c8);
 pub const GRAPES: WareType = WareType(0x0001_d4ce);
 pub const CHAMPAGNE: WareType = WareType(0x0001_d4d0);
-pub const GLASSES: WareType = WareType(0x0001_d4de);
+pub const SPECTACLES: WareType = WareType(0x0001_d4de);
 pub const COFFEE_BEANS: WareType = WareType(0x0001_d4df);
 pub const COFFEE: WareType = WareType(0x0001_d4e0);
 pub const FRIED_PLANTAINS: WareType = WareType(0x0001_d4e1);
@@ -275,7 +275,7 @@ impl Debug for WareType {
             WOOD => "Wood".to_string(),
             GRAPES => "Grapes".to_string(),
             CHAMPAGNE => "Champagne".to_string(),
-            GLASSES => "Glasses".to_string(),
+            SPECTACLES => "Spectacles".to_string(),
             COFFEE_BEANS => "Coffee Beans".to_string(),
             COFFEE => "Coffee".to_string(),
             FRIED_PLANTAINS => "Fried Plaintains".to_string(),
