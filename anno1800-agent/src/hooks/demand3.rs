@@ -8,7 +8,7 @@ use crate::api::{
     ware_type::{BLUEPRINT, CULTIVATION_AREA, DEPOSIT},
 };
 
-use super::{send, AnnoMessage, ConsumptionMessage, ExtraProductionMessage, ProductionMessage, InputMessage};
+use super::{send, AnnoMessage, ConsumptionMessage, ExtraProductionMessage, InputMessage, ProductionMessage};
 
 pub unsafe fn handle_demand3(area_object_manager: AreaObjectManagerPtr) {
     let class59 = area_object_manager.get_class59();

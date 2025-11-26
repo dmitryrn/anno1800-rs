@@ -6,11 +6,13 @@ use windows::{
     Win32::{
         Foundation::{GetLastError, WIN32_ERROR},
         System::{
+            Diagnostics::Debug::WriteProcessMemory,
             LibraryLoader::GetModuleHandleA,
             Memory::{
                 VirtualAlloc, VirtualProtect, VirtualQuery, MEMORY_BASIC_INFORMATION, MEM_COMMIT, MEM_FREE, MEM_RESERVE, PAGE_EXECUTE, PAGE_EXECUTE_READWRITE,
                 PAGE_PROTECTION_FLAGS,
             },
+            Threading::{GetCurrentProcessId, OpenProcess, PROCESS_ACCESS_RIGHTS, PROCESS_ALL_ACCESS},
         },
     },
 };
@@ -30,14 +32,17 @@ pub unsafe fn hook_call_rel32(call_module: PCSTR, call_offset: usize, new_addres
     let jump = build_far_jump_around(call_address, new_address)?;
 
     debug!("Patching {:#x} to call cave {:#x}", call_address, jump as usize);
+    let new_value = jump.wrapping_sub(call_address + 5); // +5 for the size of the call
+    let new_value_u32: u32 = new_value as _;
+    let rel32_ptr: *mut u32 = (call_address + 1) as _;
+    /*
     let mut old_flags: PAGE_PROTECTION_FLAGS = windows::Win32::System::Memory::PAGE_PROTECTION_FLAGS(0);
     if !VirtualProtect(call_address as _, 8, PAGE_EXECUTE_READWRITE, &mut old_flags).as_bool() {
         let error: WIN32_ERROR = GetLastError();
         error!("VirtualProtect PAGE_EXECUTE_READWRITE failed: {:?}", error);
         return Err(HookError::VirtualProtectFailed(error));
     }
-    let new_value = jump.wrapping_sub(call_address + 5); // +5 for the size of the call
-    let rel32_ptr: *mut u32 = (call_address + 1) as _;
+
     debug!("write_volatile {:#016x}", rel32_ptr as usize);
     rel32_ptr.write_volatile(new_value as _);
     if !VirtualProtect(call_address as _, 8, PAGE_EXECUTE, &mut old_flags).as_bool() {
@@ -46,6 +51,11 @@ pub unsafe fn hook_call_rel32(call_module: PCSTR, call_offset: usize, new_addres
         error!("VirtualProtect restore failed: {:?}", error);
         return Err(HookError::VirtualProtectFailed(error));
     }
+    */
+    let selfhandle = OpenProcess(PROCESS_ALL_ACCESS, false, GetCurrentProcessId()).unwrap();
+    debug!("selfhandle acquired");
+    WriteProcessMemory(selfhandle, rel32_ptr as _, (&new_value_u32) as *const u32 as _, 4, None);
+    debug!("WriteProcessMemory finished");
 
     Ok(())
 }

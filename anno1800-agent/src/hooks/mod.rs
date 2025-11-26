@@ -81,7 +81,7 @@ pub unsafe extern "fastcall" fn handle_update_potential_production_hook(producti
 
 pub unsafe extern "fastcall" fn handle_demand3(area_object_manager_ptr: u64, weird_id: u32, a3: u32, a4: u64) {
     demand3::handle_demand3(AreaObjectManagerPtr::new(area_object_manager_ptr));
-    let call_address = get_module_offset(0x7b53e0);
+    let call_address = get_module_offset(0x7BA460);
     let orig: extern "fastcall" fn(area_object_manager_ptr: u64, weird_id: u32, a3: u32, a4: u64) = unsafe { transmute(call_address as usize) };
     orig(area_object_manager_ptr, weird_id, a3, a4);
 }
