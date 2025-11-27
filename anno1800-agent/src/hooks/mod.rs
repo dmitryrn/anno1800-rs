@@ -67,18 +67,6 @@ struct ResidenceConsumptionMessage {
     consumption: f32,
 }
 
-pub unsafe extern "fastcall" fn handle_update_potential_production_hook(production_building_ptr: u64) {
-    let production_building = ProductionBuildingPtr::new(production_building_ptr);
-    let socket = get_socket();
-    socket
-        .send_to(format!("{:?}\n", production_building).as_bytes(), "192.168.178.33:1800")
-        .unwrap();
-    let call_base = GetModuleHandleA(s!("Anno1800.exe")).unwrap();
-    let call_address = call_base.0 as usize + 0xd4e400;
-    let orig: extern "fastcall" fn(class4_ptr: u64) = unsafe { transmute(call_address) };
-    orig(production_building_ptr);
-}
-
 pub unsafe extern "fastcall" fn handle_demand3(area_object_manager_ptr: u64, weird_id: u32, a3: u32, a4: u64) {
     demand3::handle_demand3(AreaObjectManagerPtr::new(area_object_manager_ptr));
     let call_address = get_module_offset(0x7BA460);
@@ -86,11 +74,11 @@ pub unsafe extern "fastcall" fn handle_demand3(area_object_manager_ptr: u64, wei
     orig(area_object_manager_ptr, weird_id, a3, a4);
 }
 
-pub unsafe extern "fastcall" fn handle_do_residence_consumption_stuff(area_residence_consumption_manager_ptr: u64, a2: u64, a3: u64, a4: u64) {
+pub unsafe extern "fastcall" fn handle_do_residence_consumption_stuff(area_residence_consumption_manager_ptr: u64) {
     handle_residences(AreaResidenceConsumptionManagerPtr::new(area_residence_consumption_manager_ptr));
-    let call_address = get_module_offset(0x97a9c0);
-    let orig: extern "fastcall" fn(area_object_manager_ptr: u64, weird_id: u64, a3: u64, a4: u64) = unsafe { transmute(call_address as usize) };
-    orig(area_residence_consumption_manager_ptr, a2, a3, a4);
+    let call_address = get_module_offset(0x97FDA0);
+    let orig: extern "fastcall" fn(area_object_manager_ptr: u64) = unsafe { transmute(call_address as usize) };
+    orig(area_residence_consumption_manager_ptr);
 }
 
 fn get_socket() -> &'static UdpSocket {

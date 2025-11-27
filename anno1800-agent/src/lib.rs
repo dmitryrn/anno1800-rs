@@ -15,7 +15,7 @@ pub unsafe extern "C" fn start() -> u32 {
     log::set_max_level(log::LevelFilter::Trace);
     debug!("start()");
     ffi::hook_call_rel32(s!("Anno1800.exe"), 0x169751a, handle_demand3 as usize).unwrap();
-    //ffi::hook_call_rel32(s!("Anno1800.exe"), 0x99ac2d, handle_do_residence_consumption_stuff as usize).unwrap();
+    ffi::hook_call_rel32(s!("Anno1800.exe"), 0x97F790, handle_do_residence_consumption_stuff as usize).unwrap();
     info!("Anno1800 agent startup completed sucessfully.");
     1
 }
