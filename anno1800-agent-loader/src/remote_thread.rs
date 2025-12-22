@@ -16,8 +16,16 @@ pub struct RemoteThread {
 impl RemoteThread {
     pub unsafe fn new(remote_process: &RemoteProcess, start_address: u64, arg: Option<u64>) -> Result<RemoteThread, Anno1800AgentLoaderError> {
         debug!("CreateRemoteThread({:#016x})", start_address);
-        let thread = CreateRemoteThread(remote_process.handle, None, 0, mem::transmute(start_address), arg.map(|u| u as _), 0, None)
-            .map_err(Anno1800AgentLoaderError::CreateRemoteThreadFailed)?;
+        let thread = CreateRemoteThread(
+            remote_process.handle,
+            None,
+            0,
+            Some(mem::transmute::<u64, unsafe extern "system" fn(*mut std::ffi::c_void) -> u32>(start_address)),
+            arg.map(|u| u as _),
+            0,
+            None,
+        )
+        .map_err(Anno1800AgentLoaderError::CreateRemoteThreadFailed)?;
 
         Ok(RemoteThread { handle: thread })
     }

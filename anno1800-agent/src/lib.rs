@@ -1,5 +1,7 @@
 #![allow(clippy::missing_safety_doc)]
-use log::{debug, info};
+use std::panic;
+
+use log::{debug, error, info};
 
 use windows::s;
 
@@ -13,6 +15,9 @@ pub mod hooks;
 pub unsafe extern "C" fn start() -> u32 {
     let _ = log::set_logger(&win_dbg_logger::DEBUGGER_LOGGER);
     log::set_max_level(log::LevelFilter::Trace);
+    panic::set_hook(Box::new(|p| {
+        error!("panic: {p}");
+    }));
     debug!("start()");
     ffi::hook_call_rel32(s!("Anno1800.exe"), 0x169751a, handle_demand3 as usize).unwrap();
     ffi::hook_call_rel32(s!("Anno1800.exe"), 0x97F790, handle_do_residence_consumption_stuff as usize).unwrap();

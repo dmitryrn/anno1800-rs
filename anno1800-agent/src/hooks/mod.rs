@@ -1,10 +1,8 @@
 use serde::{Deserialize, Serialize};
 use std::{mem::transmute, net::UdpSocket, sync::OnceLock};
-use windows::{s, Win32::System::LibraryLoader::GetModuleHandleA};
 
 use crate::api::{
-    area_object_manager::AreaObjectManagerPtr, area_residence_consumption_manager::AreaResidenceConsumptionManagerPtr, get_module_offset,
-    production_building::ProductionBuildingPtr, AnnoPtr,
+    area_object_manager::AreaObjectManagerPtr, area_residence_consumption_manager::AreaResidenceConsumptionManagerPtr, get_module_offset, AnnoPtr,
 };
 
 use self::residence_consumption::handle_residences;
@@ -67,17 +65,17 @@ struct ResidenceConsumptionMessage {
     consumption: f32,
 }
 
-pub unsafe extern "fastcall" fn handle_demand3(area_object_manager_ptr: u64, weird_id: u32, a3: u32, a4: u64) {
+pub unsafe extern "C" fn handle_demand3(area_object_manager_ptr: u64, weird_id: u32, a3: u32, a4: u64) {
     demand3::handle_demand3(AreaObjectManagerPtr::new(area_object_manager_ptr));
-    let call_address = get_module_offset(0x7BA460);
-    let orig: extern "fastcall" fn(area_object_manager_ptr: u64, weird_id: u32, a3: u32, a4: u64) = unsafe { transmute(call_address as usize) };
+    let call_address: u64 = get_module_offset(0x7BA460);
+    let orig: extern "C" fn(area_object_manager_ptr: u64, weird_id: u32, a3: u32, a4: u64) = unsafe { transmute(call_address as usize) };
     orig(area_object_manager_ptr, weird_id, a3, a4);
 }
 
-pub unsafe extern "fastcall" fn handle_do_residence_consumption_stuff(area_residence_consumption_manager_ptr: u64) {
+pub unsafe extern "C" fn handle_do_residence_consumption_stuff(area_residence_consumption_manager_ptr: u64) {
     handle_residences(AreaResidenceConsumptionManagerPtr::new(area_residence_consumption_manager_ptr));
     let call_address = get_module_offset(0x97FDA0);
-    let orig: extern "fastcall" fn(area_object_manager_ptr: u64) = unsafe { transmute(call_address as usize) };
+    let orig: extern "C" fn(area_object_manager_ptr: u64) = unsafe { transmute(call_address as usize) };
     orig(area_residence_consumption_manager_ptr);
 }
 

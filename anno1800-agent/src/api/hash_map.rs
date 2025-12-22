@@ -117,3 +117,34 @@ fn fnv1a_32(input: u32) -> u64 {
 
     hash
 }
+
+fn fnv1a_16(input: u16) -> u64 {
+    let bytes = input.to_le_bytes();
+    let mut hash = 0xCBF29CE4_84222325u64;
+
+    for byte in bytes {
+        hash ^= byte as u64;
+        hash = hash.wrapping_mul(0x100000001b3);
+    }
+
+    hash
+}
+
+mod test {
+    use crate::api::{hash_map::fnv1a_32, hash_map::fnv1a_16, ware_type::STEEL_BEAMS};
+
+    #[test]
+    fn test_fnv1a_32_steel_beams() {
+        assert_eq!(fnv1a_32(STEEL_BEAMS.0) & 0x1ff, 0x12a);
+    }
+
+    #[test]
+    fn test_fnv1a_16_island_1() {
+        assert_eq!(fnv1a_16(0x21c2) & 0x3f, 0x2c);
+    }
+
+    #[test]
+    fn test_fnv1a_16_island_2() {
+        assert_eq!(fnv1a_16(0x2442) & 0x3f, 0x13);
+    }
+}

@@ -17,7 +17,7 @@ impl Class33Ptr {
         unsafe {
             let call_base = GetModuleHandleA(s!("Anno1800.exe")).unwrap();
             let call_address = call_base.0 as usize + 0xd63fb0;
-            let orig: extern "fastcall" fn(class33_ptr: u64, building_type_ptr: u64) -> u64 = transmute(call_address);
+            let orig: extern "C" fn(class33_ptr: u64, building_type_ptr: u64) -> u64 = transmute(call_address);
             Class34::new(orig(self.address, building_type as *const WareType as u64))
         }
     }
