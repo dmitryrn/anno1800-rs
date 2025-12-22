@@ -6,13 +6,11 @@ use windows::{
     Win32::{
         Foundation::{GetLastError, WIN32_ERROR},
         System::{
-            Diagnostics::Debug::WriteProcessMemory,
             LibraryLoader::GetModuleHandleA,
             Memory::{
                 VirtualAlloc, VirtualProtect, VirtualQuery, MEMORY_BASIC_INFORMATION, MEM_COMMIT, MEM_FREE, MEM_RESERVE, PAGE_EXECUTE, PAGE_EXECUTE_READWRITE,
                 PAGE_PROTECTION_FLAGS,
             },
-            Threading::{GetCurrentProcessId, OpenProcess, PROCESS_ALL_ACCESS},
         },
     },
 };
@@ -33,7 +31,6 @@ pub unsafe fn hook_call_rel32(call_module: PCSTR, call_offset: usize, new_addres
 
     debug!("Patching {:#x} to call cave {:#x}", call_address, jump as usize);
     let new_value = jump.wrapping_sub(call_address + 5); // +5 for the size of the call
-    let new_value_u32: u32 = new_value as _;
     let rel32_ptr: *mut u32 = (call_address + 1) as _;
 
     let mut old_flags: PAGE_PROTECTION_FLAGS = windows::Win32::System::Memory::PAGE_PROTECTION_FLAGS(0);

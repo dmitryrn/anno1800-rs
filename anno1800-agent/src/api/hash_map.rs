@@ -130,6 +130,7 @@ fn fnv1a_16(input: u16) -> u64 {
     hash
 }
 
+#[cfg(test)]
 mod test {
     use crate::api::{hash_map::fnv1a_32, hash_map::fnv1a_16, ware_type::STEEL_BEAMS};
 
