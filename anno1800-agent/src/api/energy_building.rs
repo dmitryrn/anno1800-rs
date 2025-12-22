@@ -1,7 +1,7 @@
 use std::fmt::Debug;
 
 use super::{
-    array_list::ArrayListPtr, class32::Class32, class33::Class33Ptr, class34::Class34, ware_production_extra::WareProductionExtraPtr, ware_type::WareType,
+    array_list::ArrayListPtr, class32::Class32, ware_production_extra::WareProductionExtraPtr, ware_type::WareType,
     AnnoPtr,
 };
 
@@ -17,14 +17,6 @@ impl EnergyBuildingPtr {
 
     pub fn get_field_8(&self) -> u64 {
         self.get(0x0008)
-    }
-
-    pub fn get_prod_thingy(&self) -> Class33Ptr {
-        unsafe { Class33Ptr::new(self.address + 0x0090) }
-    }
-
-    pub fn get_prod_thingy2(&self) -> Class33Ptr {
-        unsafe { Class33Ptr::new(self.address + 0x00b0) }
     }
 
     pub fn get_first_input(&self) -> u64 {
@@ -78,12 +70,6 @@ impl EnergyBuildingPtr {
         self.get_buffs_list().get_all()
     }
 
-    pub fn get_prod_class34(&self) -> Class34 {
-        let class33 = self.get_prod_thingy();
-        let building_type = self.get_ware_type();
-        class33.get_class34(&building_type)
-    }
-
     pub fn get_cycles_per_minute(&self) -> f32 {
         if self.get_200() == 0 {
             60000.0 / self.get_millis_per_cycle() as f32 * self.get_potential_productivity_factor()
@@ -98,16 +84,11 @@ impl Debug for EnergyBuildingPtr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("EnergyBuildingPtr")
             .field("address", &format!("{:#018x}", &self.address))
-            //.field("vtable", &format!("{:#018x}", &self.get_vtable()))
-            //.field("field_8", &format!("{:#018x}", &self.get_field_8()))
-            //.field("field_16c", &format!("{:#08x}", &self.get_16c()))
             .field("current_productivity_factor", &format!("{:.2}", &self.get_current_productivity_factor()))
             .field("potential_productivity_factor", &format!("{:.2}", &self.get_potential_productivity_factor()))
             .field("millis_per_cycle", &format!("{:05}", &self.get_millis_per_cycle()))
-            .field("prod_class34", &self.get_prod_class34())
             .field("type", &self.get_ware_type())
             .field("inputs", &self.get_inputs())
-            //.field("buffs", &self.get_buffs())
             .finish()
     }
 }

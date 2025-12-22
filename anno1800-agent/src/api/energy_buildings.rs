@@ -9,7 +9,7 @@ pub struct EnergyBuildingsPtr {
 }
 
 impl EnergyBuildingsPtr {
-    const VTABLE_OFFSET: u64 = 0x510d650;
+    const VTABLE_OFFSET: u64 = 0x5119198;
 
     pub unsafe fn new(address: u64) -> Self {
         let obj = Self { address };

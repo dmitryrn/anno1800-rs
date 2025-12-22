@@ -11,8 +11,8 @@ use crate::api::{
 use super::{send, AnnoMessage, ConsumptionMessage, ExtraProductionMessage, InputMessage, ProductionMessage};
 
 pub unsafe fn handle_demand3(area_object_manager: AreaObjectManagerPtr) {
-    let class59 = area_object_manager.get_class59();
-    let string_buffer = class59.get_string_buffer();
+    let island = area_object_manager.get_island();
+    let string_buffer = island.get_custom_name();
     let buf = string_buffer.get_buf();
     let island_name = String::from_utf16_lossy(slice::from_raw_parts(buf as *const u16, string_buffer.get_len() as _));
     let class46 = area_object_manager.get_class46();

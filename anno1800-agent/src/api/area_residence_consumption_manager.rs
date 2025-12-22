@@ -1,13 +1,13 @@
-use super::{class30::Class30Ptr, class59::Class59Ptr, AnnoPtr};
+use super::{class30::Class30Ptr, island::IslandPtr, AnnoPtr};
 
 pub struct AreaResidenceConsumptionManagerPtr {
     pub address: u64,
 }
 
 impl AreaResidenceConsumptionManagerPtr {
-    pub unsafe fn get_class59(&self) -> Class59Ptr {
+    pub unsafe fn get_island(&self) -> IslandPtr {
         let address: u64 = self.get(0x0038);
-        Class59Ptr::new(address)
+        IslandPtr::new(address)
     }
 
     pub unsafe fn get_class30_first(&self) -> u64 {
