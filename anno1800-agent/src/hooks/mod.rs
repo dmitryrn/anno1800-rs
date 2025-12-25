@@ -22,6 +22,7 @@ struct AnnoMessage {
 struct ProductionMessage {
     address: u64,
     island: String,
+    island_owner: u16,
     ware_type: u32,
     ware_string: String,
     potential_production: f32,
@@ -47,6 +48,7 @@ struct InputMessage {
 struct ConsumptionMessage {
     address: u64,
     island: String,
+    island_owner: u16,
     potential_consumption: f32,
     potential_extra_production: Vec<ExtraProductionMessage>,
     inputs: Vec<u32>,
@@ -55,6 +57,7 @@ struct ConsumptionMessage {
 #[derive(Serialize, Deserialize)]
 struct ResidenceConsumptionsMessage {
     island: String,
+    island_owner: u16,
     consumptions: Vec<ResidenceConsumptionMessage>,
 }
 

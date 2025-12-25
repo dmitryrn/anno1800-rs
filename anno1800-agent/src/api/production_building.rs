@@ -1,9 +1,6 @@
 use std::fmt::Debug;
 
-use super::{
-    array_list::ArrayListPtr, class32::Class32, ware_production_extra::WareProductionExtraPtr, ware_type::WareType,
-    AnnoPtr,
-};
+use super::{array_list::ArrayListPtr, class32::Class32, ware_production_extra::WareProductionExtraPtr, ware_type::WareType, AnnoPtr};
 
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub struct ProductionBuildingPtr {

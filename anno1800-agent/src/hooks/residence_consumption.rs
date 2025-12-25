@@ -3,7 +3,9 @@ use crate::api::area_residence_consumption_manager::AreaResidenceConsumptionMana
 use super::{send, AnnoMessage, ResidenceConsumptionMessage, ResidenceConsumptionsMessage};
 
 pub unsafe fn handle_residences(arcm: AreaResidenceConsumptionManagerPtr) {
-    let island_name = arcm.get_island().get_custom_name().get_string();
+    let island = arcm.get_island();
+    let island_name = island.get_name();
+    let island_owner = island.get_owner_index();
     let mut consumptions = vec![];
     let class30s = arcm.get_class30s();
     for class30 in class30s {
@@ -19,6 +21,7 @@ pub unsafe fn handle_residences(arcm: AreaResidenceConsumptionManagerPtr) {
         consumption_building: None,
         residence_consumption: Some(ResidenceConsumptionsMessage {
             island: island_name,
+            island_owner,
             consumptions,
         }),
     };
