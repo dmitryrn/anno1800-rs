@@ -11,14 +11,15 @@ use super::{send, AnnoMessage, ConsumptionMessage, ExtraProductionMessage, Input
 pub unsafe fn handle_demand3(area_object_manager: AreaObjectManagerPtr) {
     let island = area_object_manager.get_island();
     let island_name = island.get_name();
+    let island_id = island.get_island_id();
     let island_owner = island.get_owner_index();
     let class46 = area_object_manager.get_class46();
-    handle_production_buildings(&island_name, island_owner, &class46.get_production_buildings().get_vec());
-    handle_consumption_buildings(&island_name, island_owner, &class46.get_consumption_buildings().get_vec());
-    handle_energy_buildings(&island_name, island_owner, &class46.get_energy_buildings().get_vec());
+    handle_production_buildings(&island_name, island_id, island_owner, &class46.get_production_buildings().get_vec());
+    handle_consumption_buildings(&island_name, island_id, island_owner, &class46.get_consumption_buildings().get_vec());
+    handle_energy_buildings(&island_name, island_id, island_owner, &class46.get_energy_buildings().get_vec());
 }
 
-pub unsafe fn handle_production_buildings(island_name: &str, island_owner: u16, buildings: &[ProductionBuildingPtr]) {
+pub unsafe fn handle_production_buildings(island_name: &str, island_id: u16, island_owner: u16, buildings: &[ProductionBuildingPtr]) {
     for production in buildings {
         let ware_type = production.get_ware_type();
         if ware_type == BLUEPRINT {
@@ -31,6 +32,7 @@ pub unsafe fn handle_production_buildings(island_name: &str, island_owner: u16, 
             production_building: Some(ProductionMessage {
                 address: production.address,
                 island: island_name.to_owned(),
+                island_id,
                 island_owner,
                 ware_type: ware_type.into(),
                 ware_string: format!("{:?}", ware_type),
@@ -60,7 +62,7 @@ pub unsafe fn handle_production_buildings(island_name: &str, island_owner: u16, 
     }
 }
 
-pub unsafe fn handle_consumption_buildings(island_name: &str, island_owner: u16, buildings: &[ConsumptionBuildingPtr]) {
+pub unsafe fn handle_consumption_buildings(island_name: &str, island_id: u16, island_owner: u16, buildings: &[ConsumptionBuildingPtr]) {
     for production in buildings {
         let potential_consumption = production.get_cycles_per_minute();
         let inputs = production.get_inputs();
@@ -70,6 +72,7 @@ pub unsafe fn handle_consumption_buildings(island_name: &str, island_owner: u16,
             consumption_building: Some(ConsumptionMessage {
                 address: production.address,
                 island: island_name.to_owned(),
+                island_id,
                 island_owner,
                 potential_consumption,
                 potential_extra_production: buffs
@@ -92,7 +95,7 @@ pub unsafe fn handle_consumption_buildings(island_name: &str, island_owner: u16,
     }
 }
 
-pub unsafe fn handle_energy_buildings(island_name: &str, island_owner: u16, buildings: &[EnergyBuildingPtr]) {
+pub unsafe fn handle_energy_buildings(island_name: &str, island_id: u16, island_owner: u16, buildings: &[EnergyBuildingPtr]) {
     for production in buildings {
         let potential_consumption = production.get_cycles_per_minute();
         let inputs = production.get_inputs();
@@ -102,6 +105,7 @@ pub unsafe fn handle_energy_buildings(island_name: &str, island_owner: u16, buil
             consumption_building: Some(ConsumptionMessage {
                 address: production.address,
                 island: island_name.to_owned(),
+                island_id,
                 island_owner,
                 potential_consumption,
                 potential_extra_production: buffs
