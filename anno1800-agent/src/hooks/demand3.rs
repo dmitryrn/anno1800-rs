@@ -12,7 +12,7 @@ pub unsafe fn handle_demand3(area_object_manager: AreaObjectManagerPtr) {
     let island = area_object_manager.get_island();
     let island_name = island.get_name();
     let island_id = island.get_island_id();
-    let island_owner = island.get_owner_index();
+    let island_owner = island.get_owner_id();
     let class46 = area_object_manager.get_class46();
     handle_production_buildings(&island_name, island_id, island_owner, &class46.get_production_buildings().get_vec());
     handle_consumption_buildings(&island_name, island_id, island_owner, &class46.get_consumption_buildings().get_vec());
@@ -57,6 +57,7 @@ pub unsafe fn handle_production_buildings(island_name: &str, island_id: u16, isl
             }),
             consumption_building: None,
             residence_consumption: None,
+            trade_route: None,
         };
         send(&format!("{}\n", &serde_json::to_string(&message).unwrap()));
     }
@@ -90,6 +91,7 @@ pub unsafe fn handle_consumption_buildings(island_name: &str, island_id: u16, is
                     .collect(),
             }),
             residence_consumption: None,
+            trade_route: None,
         };
         send(&format!("{}\n", &serde_json::to_string(&message).unwrap()));
     }
@@ -123,6 +125,7 @@ pub unsafe fn handle_energy_buildings(island_name: &str, island_id: u16, island_
                     .collect(),
             }),
             residence_consumption: None,
+            trade_route: None,
         };
         send(&format!("{}\n", &serde_json::to_string(&message).unwrap()));
     }

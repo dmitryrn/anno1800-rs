@@ -1,13 +1,18 @@
 use serde::{Deserialize, Serialize};
 use std::{mem::transmute, net::UdpSocket, sync::OnceLock};
 
-use crate::api::{
-    area_object_manager::AreaObjectManagerPtr, area_residence_consumption_manager::AreaResidenceConsumptionManagerPtr, get_module_offset, AnnoPtr,
+use crate::{
+    api::{
+        area_object_manager::AreaObjectManagerPtr, area_residence_consumption_manager::AreaResidenceConsumptionManagerPtr, get_module_offset,
+        trade_route::TradeRoutePtr, AnnoPtr,
+    },
+    hooks::trade_routes::handle_trade_route,
 };
 
 use self::residence_consumption::handle_residences;
 pub mod demand3;
 pub mod residence_consumption;
+pub mod trade_routes;
 
 static CELL: OnceLock<UdpSocket> = OnceLock::new();
 
@@ -16,6 +21,7 @@ struct AnnoMessage {
     production_building: Option<ProductionMessage>,
     consumption_building: Option<ConsumptionMessage>,
     residence_consumption: Option<ResidenceConsumptionsMessage>,
+    trade_route: Option<TradeRouteMessage>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -71,6 +77,28 @@ struct ResidenceConsumptionMessage {
     consumption: f32,
 }
 
+#[derive(Serialize, Deserialize)]
+struct TradeRouteMessage {
+    address: u64,
+    name: String,
+    owner_id: u16,
+    stops: Vec<TradeRouteStopMessage>,
+}
+
+#[derive(Serialize, Deserialize)]
+struct TradeRouteStopMessage {
+    island_id: u16,
+    slots: Vec<TradeRouteStopSlotMessage>,
+}
+
+#[derive(Serialize, Deserialize)]
+struct TradeRouteStopSlotMessage {
+    product_type: u32,
+    product_type_string: String,
+    amount: u32,
+    action: u8,
+}
+
 pub unsafe extern "C" fn handle_demand3(area_object_manager_ptr: u64, weird_id: u32, a3: u32, a4: u64) {
     demand3::handle_demand3(AreaObjectManagerPtr::new(area_object_manager_ptr));
     let call_address: u64 = get_module_offset(0x7BA460);
@@ -83,6 +111,15 @@ pub unsafe extern "C" fn handle_do_residence_consumption_stuff(area_residence_co
     let call_address = get_module_offset(0x97FDA0);
     let orig: extern "C" fn(area_object_manager_ptr: u64) = unsafe { transmute(call_address as usize) };
     orig(area_residence_consumption_manager_ptr);
+}
+
+pub unsafe extern "C" fn handle_trade_route_vehicle_on_game_tick_get_trade_route(a1: u64, a2: u32) -> u64 {
+    let call_address = get_module_offset(0x8522E0);
+    let orig: extern "C" fn(a1: u64, a2: u32) -> u64 = unsafe { transmute(call_address as usize) };
+    let trade_route_address = orig(a1, a2);
+    let trade_route = TradeRoutePtr::new(trade_route_address);
+    handle_trade_route(trade_route);
+    trade_route_address
 }
 
 fn get_socket() -> &'static UdpSocket {

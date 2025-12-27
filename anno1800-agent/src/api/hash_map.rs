@@ -53,6 +53,18 @@ impl HashMapPtr {
     }
 }
 
+impl IntoIterator for HashMapPtr {
+    type Item = HashMapContainerPtr;
+    type IntoIter = HashMapPtrIterator;
+
+    fn into_iter(self) -> Self::IntoIter {
+        HashMapPtrIterator {
+            current: unsafe { HashMapContainerPtr::new(self.get_last()).get_prev() },
+            last: self.get_last(),
+        }
+    }
+}
+
 pub struct HashMapBucketPtr {
     pub address: u64,
 }
@@ -77,11 +89,16 @@ impl AnnoPtr for HashMapBucketPtr {
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct HashMapContainerPtr {
     pub address: u64,
 }
 
 impl HashMapContainerPtr {
+    unsafe fn get_prev(&self) -> HashMapContainerPtr {
+        HashMapContainerPtr::new(self.get(0x0008))
+    }
+
     fn get_next(&self) -> u64 {
         self.get(0x0008)
     }
@@ -102,6 +119,26 @@ impl AnnoPtr for HashMapContainerPtr {
 
     fn get_address(&self) -> u64 {
         self.address
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct HashMapPtrIterator {
+    current: HashMapContainerPtr,
+    last: u64,
+}
+
+impl Iterator for HashMapPtrIterator {
+    type Item = HashMapContainerPtr;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.current.address == self.last {
+            None
+        } else {
+            let current = self.current;
+            self.current = unsafe { self.current.get_prev() };
+            Some(current)
+        }
     }
 }
 

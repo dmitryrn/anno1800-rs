@@ -16,9 +16,11 @@ pub mod island;
 pub mod offsets;
 pub mod production_building;
 pub mod production_buildings;
+pub mod session_trade_route_manager;
 pub mod string_buffer;
 pub mod struct188;
 pub mod text_manager;
+pub mod trade_route;
 pub mod ware_production_extra;
 pub mod ware_type;
 

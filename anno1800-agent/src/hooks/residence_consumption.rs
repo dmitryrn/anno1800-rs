@@ -6,7 +6,7 @@ pub unsafe fn handle_residences(arcm: AreaResidenceConsumptionManagerPtr) {
     let island = arcm.get_island();
     let island_name = island.get_name();
     let island_id = island.get_island_id();
-    let island_owner = island.get_owner_index();
+    let island_owner = island.get_owner_id();
     let mut consumptions = vec![];
     let class30s = arcm.get_class30s();
     for class30 in class30s {
@@ -26,6 +26,7 @@ pub unsafe fn handle_residences(arcm: AreaResidenceConsumptionManagerPtr) {
             island_owner,
             consumptions,
         }),
+        trade_route: None,
     };
     send(&format!("{}\n", &serde_json::to_string(&message).unwrap()));
 }

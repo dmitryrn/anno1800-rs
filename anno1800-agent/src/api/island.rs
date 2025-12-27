@@ -11,7 +11,7 @@ impl IslandPtr {
         self.get(0x004a)
     }
 
-    pub unsafe fn get_owner_index(&self) -> u16 {
+    pub unsafe fn get_owner_id(&self) -> u16 {
         self.get(0x004e)
     }
 

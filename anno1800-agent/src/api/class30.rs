@@ -6,10 +6,6 @@ pub struct Class30Ptr {
 }
 
 impl Class30Ptr {
-    pub unsafe fn new(address: u64) -> Self {
-        Self { address }
-    }
-
     pub unsafe fn get_ware_type(&self) -> WareType {
         self.get(0x00)
     }
