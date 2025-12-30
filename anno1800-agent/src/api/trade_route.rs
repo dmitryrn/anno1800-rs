@@ -1,4 +1,4 @@
-use crate::api::{AnnoPtr, array_list::ArrayListPtr, string_buffer::StringBufferPtr, ware_type::WareType};
+use crate::api::{array_list::ArrayListPtr, string_buffer::StringBufferPtr, ware_type::WareType, AnnoPtr};
 
 pub struct TradeRoutePtr {
     pub address: u64,
@@ -19,7 +19,7 @@ impl TradeRoutePtr {
 
     pub unsafe fn get_stops(&self) -> Vec<TradeRouteStopPtr> {
         let array_list = ArrayListPtr::<*const *const TradeRouteStopPtr>::new(self.address + 0x38);
-        let ptrs = array_list.get_all();
+        let ptrs = array_list.get_all_words();
         ptrs.iter().map(|e| TradeRouteStopPtr::new(**e as _)).collect()
     }
 
@@ -35,7 +35,7 @@ impl TradeRouteStopPtr {
 
     pub unsafe fn get_slots(&self) -> Vec<TradeRouteStopSlotPtr> {
         let array_list = ArrayListPtr::<*const *const TradeRouteStopSlotPtr>::new(self.address + 0x18);
-        let ptrs = array_list.get_all();
+        let ptrs = array_list.get_all_words();
         ptrs.iter().map(|e| TradeRouteStopSlotPtr::new(**e as _)).collect()
     }
 }

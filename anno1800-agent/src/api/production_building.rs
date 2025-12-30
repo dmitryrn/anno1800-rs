@@ -64,7 +64,7 @@ impl ProductionBuildingPtr {
     }
 
     pub fn get_buffs(&self) -> Vec<WareProductionExtraPtr> {
-        self.get_buffs_list().get_all()
+        self.get_buffs_list().get_all_words()
     }
 
     pub fn get_potential_production(&self) -> f32 {

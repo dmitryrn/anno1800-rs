@@ -17,6 +17,8 @@ pub const INDUSTRIAL_LUBRICANT: WareType = WareType(0x0000_0586);
 pub const DEPOSIT: WareType = WareType(0x0000_0637);
 pub const CULTIVATION_AREA: WareType = WareType(0x0000_07a3);
 pub const OVERSEAS_MAIL: WareType = WareType(0x0000_09dc);
+pub const NEW_WORLD_REPORTS: WareType = WareType(0x0000_10ab);
+pub const ARCTIC_REPORTS: WareType = WareType(0x0000_10ac);
 pub const CALAMARI: WareType = WareType(0x0000_1504);
 pub const JALEA: WareType = WareType(0x0000_1505);
 pub const ICE_CREAM: WareType = WareType(0x0000_1506);
@@ -205,6 +207,8 @@ impl Debug for WareType {
             DEPOSIT => "Deposit".to_string(),
             CULTIVATION_AREA => "Cultivation Area".to_string(),
             OVERSEAS_MAIL => "Overseas Mail".to_string(),
+            NEW_WORLD_REPORTS => "New World Repoerts".to_string(),
+            ARCTIC_REPORTS => "Arctic Reports".to_string(),
             CALAMARI => "Calamari".to_string(),
             JALEA => "Jalea".to_string(),
             ICE_CREAM => "Ice Cream".to_string(),

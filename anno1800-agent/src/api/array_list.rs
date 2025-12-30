@@ -16,7 +16,7 @@ impl<T: AnnoPtr> ArrayListPtr<T> {
         self.get(0x08)
     }
 
-    pub fn get_all(&self) -> Vec<T> {
+    pub fn get_all_words(&self) -> Vec<T> {
         //TODO enforce that T is 64bit wide
         let mut elements = vec![];
         let mut current = self.get_first_box() as *const u64;

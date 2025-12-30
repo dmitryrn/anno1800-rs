@@ -1,5 +1,3 @@
-use log::info;
-
 use crate::{
     api::trade_route::TradeRoutePtr,
     hooks::{send, AnnoMessage, TradeRouteMessage, TradeRouteStopMessage, TradeRouteStopSlotMessage},
@@ -12,7 +10,6 @@ pub unsafe fn handle_trade_route(trade_route: TradeRoutePtr) {
     if owner_id != 0 {
         return;
     }
-    info!("Handling route {name}");
     let stops = trade_route
         .get_stops()
         .iter()
@@ -25,7 +22,7 @@ pub unsafe fn handle_trade_route(trade_route: TradeRoutePtr) {
                     action: e.get_action(),
                     amount: e.get_amount(),
                     product_type: e.get_product_type().into(),
-                    product_type_string: format!("{:?}", e.get_product_type()),
+                    product_string: format!("{:?}", e.get_product_type()),
                 })
                 .collect(),
         })
@@ -34,7 +31,13 @@ pub unsafe fn handle_trade_route(trade_route: TradeRoutePtr) {
         production_building: None,
         consumption_building: None,
         residence_consumption: None,
-        trade_route: Some(TradeRouteMessage { address, name, owner_id, stops }),
+        trade_route: Some(TradeRouteMessage {
+            address,
+            name,
+            owner_id,
+            stops,
+        }),
+        trade_contracts: None,
     };
     send(&format!("{}\n", &serde_json::to_string(&message).unwrap()));
 }

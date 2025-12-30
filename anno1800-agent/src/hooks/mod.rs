@@ -4,14 +4,15 @@ use std::{mem::transmute, net::UdpSocket, sync::OnceLock};
 use crate::{
     api::{
         area_object_manager::AreaObjectManagerPtr, area_residence_consumption_manager::AreaResidenceConsumptionManagerPtr, get_module_offset,
-        trade_route::TradeRoutePtr, AnnoPtr,
+        trade_contracts::TradeContractsPtr, trade_route::TradeRoutePtr, AnnoPtr,
     },
-    hooks::trade_routes::handle_trade_route,
+    hooks::{trade_contracts::handle_contracts, trade_routes::handle_trade_route},
 };
 
 use self::residence_consumption::handle_residences;
 pub mod demand3;
 pub mod residence_consumption;
+pub mod trade_contracts;
 pub mod trade_routes;
 
 static CELL: OnceLock<UdpSocket> = OnceLock::new();
@@ -22,6 +23,23 @@ struct AnnoMessage {
     consumption_building: Option<ConsumptionMessage>,
     residence_consumption: Option<ResidenceConsumptionsMessage>,
     trade_route: Option<TradeRouteMessage>,
+    trade_contracts: Option<IslandTradeContractsMessage>,
+}
+
+#[derive(Serialize, Deserialize)]
+struct IslandTradeContractsMessage {
+    island_id: u16,
+    contracts: Vec<IslandTradeContractMessage>,
+}
+
+#[derive(Serialize, Deserialize)]
+struct IslandTradeContractMessage {
+    export_product_type: u32,
+    export_product_string: String,
+    export_amount: u32,
+    import_product_type: u32,
+    import_product_string: String,
+    import_amount: u32,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -30,8 +48,8 @@ struct ProductionMessage {
     island: String,
     island_id: u16,
     island_owner: u16,
-    ware_type: u32,
-    ware_string: String,
+    product_type: u32,
+    product_string: String,
     potential_production: f32,
     potential_extra_production: Vec<ExtraProductionMessage>,
     inputs: Vec<InputMessage>,
@@ -39,15 +57,15 @@ struct ProductionMessage {
 
 #[derive(Serialize, Deserialize)]
 struct ExtraProductionMessage {
-    ware_type: u32,
-    ware_string: String,
+    product_type: u32,
+    product_string: String,
     potential_production: f32,
 }
 
 #[derive(Serialize, Deserialize)]
 struct InputMessage {
-    ware_type: u32,
-    ware_string: String,
+    product_type: u32,
+    product_string: String,
     multiplier: u32,
 }
 
@@ -72,8 +90,8 @@ struct ResidenceConsumptionsMessage {
 
 #[derive(Serialize, Deserialize)]
 struct ResidenceConsumptionMessage {
-    ware_type: u32,
-    ware_string: String,
+    product_type: u32,
+    product_string: String,
     consumption: f32,
 }
 
@@ -94,7 +112,7 @@ struct TradeRouteStopMessage {
 #[derive(Serialize, Deserialize)]
 struct TradeRouteStopSlotMessage {
     product_type: u32,
-    product_type_string: String,
+    product_string: String,
     amount: u32,
     action: u8,
 }
@@ -120,6 +138,17 @@ pub unsafe extern "C" fn handle_trade_route_vehicle_on_game_tick_get_trade_route
     let trade_route = TradeRoutePtr::new(trade_route_address);
     handle_trade_route(trade_route);
     trade_route_address
+}
+
+pub unsafe extern "C" fn handle_trade_contract(trade_contract_manager: u64, island_id: u16) -> u64 {
+    let call_address = get_module_offset(0x84CB70);
+    let orig: extern "C" fn(trade_contract_manager: u64, island_id: u16) -> u64 = unsafe { transmute(call_address as usize) };
+    let trade_contracts_address = orig(trade_contract_manager, island_id);
+    if trade_contracts_address != 0 {
+        let trade_contracts = TradeContractsPtr::new(trade_contracts_address);
+        handle_contracts(trade_contracts);
+    }
+    trade_contracts_address
 }
 
 fn get_socket() -> &'static UdpSocket {

@@ -5,7 +5,10 @@ use log::{debug, error, info};
 
 use windows::s;
 
-use crate::hooks::{handle_demand3, handle_do_residence_consumption_stuff, handle_trade_route_vehicle_on_game_tick_get_trade_route};
+use crate::{
+    api::offsets::TRACE_CONTRACT_MANAGER_DO_TRADE_CONTRACT_STUFF_OFFSET,
+    hooks::{handle_demand3, handle_do_residence_consumption_stuff, handle_trade_contract, handle_trade_route_vehicle_on_game_tick_get_trade_route},
+};
 
 pub mod api;
 pub mod ffi;
@@ -22,6 +25,12 @@ pub unsafe extern "C" fn start() -> u32 {
     ffi::hook_call_rel32(s!("Anno1800.exe"), 0x169751a, handle_demand3 as usize).unwrap();
     ffi::hook_call_rel32(s!("Anno1800.exe"), 0x97F790, handle_do_residence_consumption_stuff as usize).unwrap();
     ffi::hook_call_rel32(s!("Anno1800.exe"), 0xDC3BD6, handle_trade_route_vehicle_on_game_tick_get_trade_route as usize).unwrap();
+    ffi::hook_call_rel32(
+        s!("Anno1800.exe"),
+        TRACE_CONTRACT_MANAGER_DO_TRADE_CONTRACT_STUFF_OFFSET,
+        handle_trade_contract as usize,
+    )
+    .unwrap();
     info!("Anno1800 agent startup completed sucessfully.");
     1
 }

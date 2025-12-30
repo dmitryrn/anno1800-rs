@@ -25,7 +25,7 @@ impl ConsumptionBuildingsPtr {
     }
 
     pub fn get_production_building_list(&self) -> Vec<*const ConsumptionBuildingPtr> {
-        unsafe { ArrayListPtr::new(self.address + 0x28) }.get_all()
+        unsafe { ArrayListPtr::new(self.address + 0x28) }.get_all_words()
     }
 
     pub fn get_vec(&self) -> Vec<ConsumptionBuildingPtr> {

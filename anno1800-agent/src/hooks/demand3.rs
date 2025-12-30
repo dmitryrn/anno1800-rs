@@ -34,14 +34,14 @@ pub unsafe fn handle_production_buildings(island_name: &str, island_id: u16, isl
                 island: island_name.to_owned(),
                 island_id,
                 island_owner,
-                ware_type: ware_type.into(),
-                ware_string: format!("{:?}", ware_type),
+                product_type: ware_type.into(),
+                product_string: format!("{:?}", ware_type),
                 potential_production,
                 potential_extra_production: buffs
                     .iter()
                     .map(|e| ExtraProductionMessage {
-                        ware_type: e.get_ware_type().into(),
-                        ware_string: format!("{:?}", e.get_ware_type()),
+                        product_type: e.get_ware_type().into(),
+                        product_string: format!("{:?}", e.get_ware_type()),
                         potential_production: e.get_value(),
                     })
                     .collect(),
@@ -49,8 +49,8 @@ pub unsafe fn handle_production_buildings(island_name: &str, island_id: u16, isl
                     .iter()
                     .filter(|e| e.get_ware_type() != DEPOSIT && e.get_ware_type() != CULTIVATION_AREA)
                     .map(|e| InputMessage {
-                        ware_type: e.get_ware_type().into(),
-                        ware_string: format!("{:?}", e.get_ware_type()),
+                        product_type: e.get_ware_type().into(),
+                        product_string: format!("{:?}", e.get_ware_type()),
                         multiplier: e.get_4(),
                     })
                     .collect(),
@@ -58,6 +58,7 @@ pub unsafe fn handle_production_buildings(island_name: &str, island_id: u16, isl
             consumption_building: None,
             residence_consumption: None,
             trade_route: None,
+            trade_contracts: None,
         };
         send(&format!("{}\n", &serde_json::to_string(&message).unwrap()));
     }
@@ -79,8 +80,8 @@ pub unsafe fn handle_consumption_buildings(island_name: &str, island_id: u16, is
                 potential_extra_production: buffs
                     .iter()
                     .map(|e| ExtraProductionMessage {
-                        ware_type: e.get_ware_type().into(),
-                        ware_string: format!("{:?}", e.get_ware_type()),
+                        product_type: e.get_ware_type().into(),
+                        product_string: format!("{:?}", e.get_ware_type()),
                         potential_production: e.get_value(),
                     })
                     .collect(),
@@ -92,6 +93,7 @@ pub unsafe fn handle_consumption_buildings(island_name: &str, island_id: u16, is
             }),
             residence_consumption: None,
             trade_route: None,
+            trade_contracts: None,
         };
         send(&format!("{}\n", &serde_json::to_string(&message).unwrap()));
     }
@@ -113,8 +115,8 @@ pub unsafe fn handle_energy_buildings(island_name: &str, island_id: u16, island_
                 potential_extra_production: buffs
                     .iter()
                     .map(|e| ExtraProductionMessage {
-                        ware_type: e.get_ware_type().into(),
-                        ware_string: format!("{:?}", e.get_ware_type()),
+                        product_type: e.get_ware_type().into(),
+                        product_string: format!("{:?}", e.get_ware_type()),
                         potential_production: e.get_value(),
                     })
                     .collect(),
@@ -126,6 +128,7 @@ pub unsafe fn handle_energy_buildings(island_name: &str, island_id: u16, island_
             }),
             residence_consumption: None,
             trade_route: None,
+            trade_contracts: None,
         };
         send(&format!("{}\n", &serde_json::to_string(&message).unwrap()));
     }

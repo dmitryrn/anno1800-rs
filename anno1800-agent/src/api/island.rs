@@ -1,4 +1,4 @@
-use crate::api::text_manager::TextManagerInnerPtr;
+use crate::api::{text_manager::TextManagerInnerPtr, trade_contract::TradeContractPtr, trade_contract_manager::TradeContractManagerPtr};
 
 use super::{string_buffer::StringBufferPtr, AnnoPtr};
 
@@ -30,6 +30,10 @@ impl IslandPtr {
         } else {
             TextManagerInnerPtr::from_static_ptr().get_struct_118().get_text(self.get_city_name_guid(), 0)
         }
+    }
+
+    pub unsafe fn get_trade_contracts(&self) -> TradeContractPtr {
+        TradeContractManagerPtr::get_contracts_of_island(self.get_island_id())
     }
 }
 

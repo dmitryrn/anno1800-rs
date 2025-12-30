@@ -12,8 +12,8 @@ pub unsafe fn handle_residences(arcm: AreaResidenceConsumptionManagerPtr) {
     for class30 in class30s {
         consumptions.push(ResidenceConsumptionMessage {
             consumption: 60.0 * class30.get_demand_per_second(),
-            ware_type: class30.get_ware_type().into(),
-            ware_string: format!("{:?}", class30.get_ware_type()),
+            product_type: class30.get_ware_type().into(),
+            product_string: format!("{:?}", class30.get_ware_type()),
         });
     }
 
@@ -27,6 +27,7 @@ pub unsafe fn handle_residences(arcm: AreaResidenceConsumptionManagerPtr) {
             consumptions,
         }),
         trade_route: None,
+        trade_contracts: None,
     };
     send(&format!("{}\n", &serde_json::to_string(&message).unwrap()));
 }
