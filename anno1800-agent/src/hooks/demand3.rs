@@ -67,6 +67,9 @@ pub unsafe fn handle_production_buildings(island_name: &str, island_id: u16, isl
 pub unsafe fn handle_consumption_buildings(island_name: &str, island_id: u16, island_owner: u16, buildings: &[ConsumptionBuildingPtr]) {
     for production in buildings {
         let potential_consumption = production.get_cycles_per_minute();
+        if potential_consumption.is_nan() {
+            continue;
+        }
         let inputs = production.get_inputs();
         let buffs = production.get_buffs();
         let message = AnnoMessage {
