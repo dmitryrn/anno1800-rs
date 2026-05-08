@@ -1,6 +1,7 @@
 # Anno 1800 Agent
 A simple data export agent for Anno 1800.
 Tested against the Steam release [18.4](https://store.steampowered.com/news/app/916440/view/4471607136529417446).
+Every json object is sent to `127.0.0.1:1800` via UDP.
 
 ## Usage
 - `cargo build --release`
