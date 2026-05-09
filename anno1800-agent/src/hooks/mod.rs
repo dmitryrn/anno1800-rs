@@ -16,6 +16,7 @@ pub mod trade_contracts;
 pub mod trade_routes;
 
 static CELL: OnceLock<UdpSocket> = OnceLock::new();
+static HOST: OnceLock<String> = OnceLock::new();
 
 #[derive(Serialize, Deserialize)]
 struct AnnoMessage {
@@ -155,7 +156,14 @@ fn get_socket() -> &'static UdpSocket {
     CELL.get_or_init(|| UdpSocket::bind("0.0.0.0:0").unwrap())
 }
 
+pub fn set_host(host: &str) {
+    let host = host.trim();
+    let host = if host.is_empty() { "127.0.0.1" } else { host };
+    let _ = HOST.set(host.to_string());
+}
+
 fn send(str: &str) {
     let socket = get_socket();
-    socket.send_to(str.as_bytes(), "127.0.0.1:1800").unwrap();
+    let host = HOST.get().map(String::as_str).unwrap_or("127.0.0.1");
+    socket.send_to(str.as_bytes(), format!("{host}:1800")).unwrap();
 }

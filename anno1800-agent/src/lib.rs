@@ -1,5 +1,5 @@
 #![allow(clippy::missing_safety_doc)]
-use std::panic;
+use std::{ffi::CStr, os::raw::c_char, panic};
 
 use log::{debug, error, info};
 
@@ -13,6 +13,24 @@ use crate::{
 pub mod api;
 pub mod ffi;
 pub mod hooks;
+
+#[no_mangle]
+pub unsafe extern "C" fn set_host(host: *const c_char) -> u32 {
+    if host.is_null() {
+        return 0;
+    }
+
+    match CStr::from_ptr(host).to_str() {
+        Ok(host) => {
+            hooks::set_host(host);
+            1
+        }
+        Err(e) => {
+            error!("invalid host: {e}");
+            0
+        }
+    }
+}
 
 #[no_mangle]
 pub unsafe extern "C" fn start() -> u32 {

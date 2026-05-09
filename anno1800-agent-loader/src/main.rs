@@ -31,6 +31,9 @@ enum Operation {
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
+    #[clap(default_value = "127.0.0.1")]
+    host: String,
+
     #[clap(value_enum, default_value_t=Operation::Load)]
     operation: Operation,
 }
@@ -65,7 +68,7 @@ fn main() {
     match args.operation {
         Operation::Load => {
             for process in patricians {
-                if let Err(e) = load(process.pid().as_u32()) {
+                if let Err(e) = load(process.pid().as_u32(), &args.host) {
                     error!("Load failed: {:?}", e);
                 }
             }
@@ -80,7 +83,7 @@ fn main() {
     }
 }
 
-fn load(pid: u32) -> Result<(), Anno1800AgentLoaderError> {
+fn load(pid: u32, host: &str) -> Result<(), Anno1800AgentLoaderError> {
     let path = PCSTR::from_raw(format!(r"{}\anno1800_agent.dll", std::env::current_dir().unwrap().display()).as_ptr());
     unsafe {
         println!("Loading");
@@ -96,7 +99,12 @@ fn load(pid: u32) -> Result<(), Anno1800AgentLoaderError> {
         }
 
         let agent_module = LoadLibraryA(path).unwrap();
-        run_exported_function(&remote_process, agent_module.0 as _, "start")?;
+        let mut host_bytes = host.as_bytes().to_vec();
+        host_bytes.push(0);
+        let mut remote_host = RemoteVirtualAllocation::new(&remote_process, host_bytes.len())?;
+        remote_host.write(&host_bytes)?;
+        run_exported_function(&remote_process, agent_module.0 as _, "set_host", Some(remote_host.ptr as _))?;
+        run_exported_function(&remote_process, agent_module.0 as _, "start", None)?;
 
         info!("Module loaded sucessfully ({:x})", exit_code);
         Ok(())
@@ -113,7 +121,7 @@ fn unload(pid: u32) -> Result<(), Anno1800AgentLoaderError> {
         buf_ptr.write(module_name.as_bytes())?;
 
         let agent_module = LoadLibraryA(path).unwrap();
-        run_exported_function(&remote_process, agent_module.0 as _, "stop")?;
+        run_exported_function(&remote_process, agent_module.0 as _, "stop", None)?;
 
         let free_library_a_address = GetProcAddress(kernel_32, s!("FreeLibrary")).ok_or(Anno1800AgentLoaderError::GetProcAddressFailed(GetLastError()))?;
         let exit_code = RemoteThread::new(&remote_process, free_library_a_address as usize as _, Some(agent_module.0 as _))?.wait()?;
@@ -127,7 +135,7 @@ fn unload(pid: u32) -> Result<(), Anno1800AgentLoaderError> {
     }
 }
 
-fn run_exported_function(remote_process: &RemoteProcess, base_address: u64, function_name: &str) -> Result<u32, Anno1800AgentLoaderError> {
+fn run_exported_function(remote_process: &RemoteProcess, base_address: u64, function_name: &str, arg: Option<u64>) -> Result<u32, Anno1800AgentLoaderError> {
     debug!("Running {} in module {:016x}", function_name, base_address);
     unsafe {
         // We'd love to call GetProcAddress to obtain the function pointer, but it requires 2 arguments and thus cannot be run with a simple CreateRemoteThread.
@@ -153,7 +161,7 @@ fn run_exported_function(remote_process: &RemoteProcess, base_address: u64, func
         if let Some(ordinal) = ordinal {
             let function_offset: u32 = remote_process.read(base_address + image_export_directory.AddressOfFunctions as u64 + 4 * ordinal as u64)?;
             debug!("function_offset={:x}", function_offset);
-            RemoteThread::new(remote_process, base_address + function_offset as u64, None)?.wait()
+            RemoteThread::new(remote_process, base_address + function_offset as u64, arg)?.wait()
         } else {
             Err(Anno1800AgentLoaderError::ExportedFunctionNotFound)
         }
