@@ -14,9 +14,10 @@ use crossterm::{
 };
 use ratatui::{
     backend::CrosstermBackend,
-    layout::{Constraint, Layout, Margin},
-    style::{Modifier, Style},
-    widgets::{Block, Borders, Cell, Clear, Row, Table},
+    layout::{Constraint, Layout, Margin, Rect},
+    style::{Color, Modifier, Style},
+    text::Span,
+    widgets::{Block, Borders, Clear, Gauge, Paragraph, Row, Table},
     Terminal,
 };
 use serde_json::Value;
@@ -110,11 +111,7 @@ fn update_state(
         let Some(address) = building.get("address").and_then(Value::as_u64) else {
             return;
         };
-        let island = building
-            .get("island")
-            .and_then(Value::as_str)
-            .unwrap_or("unknown")
-            .to_string();
+        let island = building.get("island").and_then(Value::as_str).unwrap_or("unknown").to_string();
         let mut resources = Vec::new();
 
         if let (Some(product_type), Some(product_string), Some(supply)) = (
@@ -140,10 +137,7 @@ fn update_state(
         }
 
         if let Some(inputs) = building.get("inputs").and_then(Value::as_array) {
-            let production = building
-                .get("potential_production")
-                .and_then(Value::as_f64)
-                .unwrap_or(0.0);
+            let production = building.get("potential_production").and_then(Value::as_f64).unwrap_or(0.0);
 
             for input in inputs {
                 if let (Some(product_type), Some(product_string), Some(multiplier)) = (
@@ -164,15 +158,8 @@ fn update_state(
         let Some(address) = building.get("address").and_then(Value::as_u64) else {
             return;
         };
-        let island = building
-            .get("island")
-            .and_then(Value::as_str)
-            .unwrap_or("unknown")
-            .to_string();
-        let demand = building
-            .get("potential_consumption")
-            .and_then(Value::as_f64)
-            .unwrap_or(0.0);
+        let island = building.get("island").and_then(Value::as_str).unwrap_or("unknown").to_string();
+        let demand = building.get("potential_consumption").and_then(Value::as_f64).unwrap_or(0.0);
         let resources = building
             .get("inputs")
             .and_then(Value::as_array)
@@ -186,11 +173,7 @@ fn update_state(
     }
 
     if let Some(residence) = event.get("residence_consumption").and_then(Value::as_object) {
-        let island = residence
-            .get("island")
-            .and_then(Value::as_str)
-            .unwrap_or("unknown")
-            .to_string();
+        let island = residence.get("island").and_then(Value::as_str).unwrap_or("unknown").to_string();
         let resources = residence
             .get("consumptions")
             .and_then(Value::as_array)
@@ -210,10 +193,7 @@ fn update_state(
 }
 
 fn resource_name(product_type: u64, product_names: &HashMap<u64, String>) -> String {
-    product_names
-        .get(&product_type)
-        .cloned()
-        .unwrap_or_else(|| format!("product {product_type}"))
+    product_names.get(&product_type).cloned().unwrap_or_else(|| format!("product {product_type}"))
 }
 
 fn render_state(
@@ -229,11 +209,15 @@ fn render_state(
 
         if state.is_empty() {
             let table = Table::new(
-                vec![Row::new(["waiting for events", ""])],
-                [Constraint::Min(24), Constraint::Length(20)],
+                vec![Row::new(["waiting for events", "", ""])],
+                [Constraint::Min(18), Constraint::Length(18), Constraint::Fill(1)],
             )
             .header(table_header())
-            .block(Block::default().title(format!("Anno 1800 Events - latest {MAX_LOGS} raw events in {LOG_PATH}")).borders(Borders::ALL));
+            .block(
+                Block::default()
+                    .title(format!("Anno 1800 Events - latest {MAX_LOGS} raw events in {LOG_PATH}"))
+                    .borders(Borders::ALL),
+            );
 
             frame.render_widget(table, frame.area());
             return;
@@ -250,12 +234,10 @@ fn render_state(
             let island_block = Block::default().title(island).borders(Borders::ALL);
             let inner = area.inner(Margin { horizontal: 1, vertical: 1 });
             let table_areas = Layout::horizontal([Constraint::Percentage(50), Constraint::Percentage(50)]).split(inner);
-            let residential_table = resource_table("Residential Consumption", residential);
-            let rest_table = resource_table("Production / Other", rest);
 
             frame.render_widget(island_block, *area);
-            frame.render_widget(residential_table, table_areas[0]);
-            frame.render_widget(rest_table, table_areas[1]);
+            render_resource_table(frame, table_areas[0], "Residential Consumption", residential);
+            render_resource_table(frame, table_areas[1], "Production / Other", rest);
         }
     })?;
 
@@ -263,38 +245,84 @@ fn render_state(
 }
 
 fn table_header() -> Row<'static> {
-    Row::new(["Resource", "Supply/Demand"]).style(Style::default().add_modifier(Modifier::BOLD))
+    Row::new(["Resource", "Supply/Demand", "Balance"]).style(Style::default().add_modifier(Modifier::BOLD))
 }
 
-fn resource_table(title: &'static str, resources: ResourceTotals) -> Table<'static> {
-    Table::new(table_rows(resources), [Constraint::Min(24), Constraint::Length(20)])
-        .header(table_header())
-        .block(Block::default().title(title).borders(Borders::ALL))
+fn render_resource_table(frame: &mut ratatui::Frame<'_>, area: Rect, title: &'static str, resources: ResourceTotals) {
+    let block = Block::default().title(title).borders(Borders::ALL);
+    let inner = block.inner(area);
+    frame.render_widget(block, area);
+
+    let rows = sorted_resource_rows(resources);
+    let row_areas = Layout::vertical(std::iter::repeat(Constraint::Length(1)).take(rows.len() + 1)).split(inner);
+
+    render_resource_row(frame, row_areas[0], "Resource".into(), "Supply/Demand".into(), None, true);
+
+    for ((resource, supply, demand), area) in rows.into_iter().zip(row_areas.iter().skip(1)) {
+        render_resource_row(
+            frame,
+            *area,
+            resource.into(),
+            format!("{supply:.2} / {demand:.2}").into(),
+            Some((supply, demand)),
+            false,
+        );
+    }
 }
 
-fn table_rows(resources: ResourceTotals) -> Vec<Row<'static>> {
+fn render_resource_row(
+    frame: &mut ratatui::Frame<'_>,
+    area: Rect,
+    resource: Span<'static>,
+    supply_demand: Span<'static>,
+    balance: Option<(f64, f64)>,
+    header: bool,
+) {
+    let columns = Layout::horizontal([Constraint::Min(18), Constraint::Length(18), Constraint::Fill(1)]).split(area);
+    let style = if header {
+        Style::default().add_modifier(Modifier::BOLD)
+    } else {
+        Style::default()
+    };
+
+    frame.render_widget(Paragraph::new(resource).style(style), columns[0]);
+    frame.render_widget(Paragraph::new(supply_demand).style(style), columns[1]);
+
+    if header {
+        frame.render_widget(Paragraph::new("Balance").style(style), columns[2]);
+    } else if let Some((supply, demand)) = balance {
+        frame.render_widget(balance_gauge(supply, demand), columns[2]);
+    }
+}
+
+fn sorted_resource_rows(resources: ResourceTotals) -> Vec<(String, f64, f64)> {
     if resources.is_empty() {
-        return vec![Row::new(["", ""])];
+        return Vec::new();
     }
 
     let mut resources = resources.into_iter().collect::<Vec<_>>();
     resources.sort_by(|(left_name, (left_supply, left_demand)), (right_name, (right_supply, right_demand))| {
-        let left_imbalance = (left_supply - left_demand).abs();
-        let right_imbalance = (right_supply - right_demand).abs();
-        right_imbalance
-            .total_cmp(&left_imbalance)
-            .then_with(|| left_name.cmp(right_name))
+        let left_ratio = fulfillment_ratio(*left_supply, *left_demand);
+        let right_ratio = fulfillment_ratio(*right_supply, *right_demand);
+        left_ratio.total_cmp(&right_ratio).then_with(|| left_name.cmp(right_name))
     });
 
-    resources
-        .into_iter()
-        .map(|(resource, (supply, demand))| {
-            Row::new(vec![
-                Cell::from(resource),
-                Cell::from(format!("{supply:.2} / {demand:.2}")),
-            ])
-        })
-        .collect()
+    resources.into_iter().map(|(resource, (supply, demand))| (resource, supply, demand)).collect()
+}
+
+fn balance_gauge(supply: f64, demand: f64) -> Gauge<'static> {
+    let ratio = fulfillment_ratio(supply, demand);
+    let color = if ratio >= 1.0 { Color::Green } else { Color::Yellow };
+
+    Gauge::default().ratio(ratio).label(Span::raw("")).gauge_style(Style::default().fg(color))
+}
+
+fn fulfillment_ratio(supply: f64, demand: f64) -> f64 {
+    if demand <= 0.0 {
+        return 1.0;
+    }
+
+    (supply / demand).clamp(0.0, 1.0)
 }
 
 fn sum_supply_demand(
@@ -335,12 +363,7 @@ fn sum_supply_demand(
     state
 }
 
-fn add_resource(
-    resources: &mut ResourceTotals,
-    resource: &str,
-    supply: f64,
-    demand: f64,
-) {
+fn add_resource(resources: &mut ResourceTotals, resource: &str, supply: f64, demand: f64) {
     let totals = resources.entry(resource.to_string()).or_default();
     totals.0 += supply;
     totals.1 += demand;
